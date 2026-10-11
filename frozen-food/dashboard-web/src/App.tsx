@@ -304,10 +304,8 @@ export function App() {
   }, [a]);
   const belanjaBars = useMemo(() => ms.map(m => ({ key: String(m.month), label: `${m.label}: ${int(m.pelanggan)} pelanggan`, axisLabel: m.short, value: m.pelanggan ? m.omzetJt / m.pelanggan : 0 })), [ms]);
   const bergantungBars = useMemo(() => a.bergantung.map(x => ({ key: x.id, label: `${x.nama} (${one(x.omzetJt)} jt): ${pct(x.pct)} dibeli ${x.pembeli}`, axisLabel: shortName(x.nama, 1), value: x.pct })), [a]);
-  const pasanganBars = useMemo(() => a.pasangan.top.slice(0, 8).map(x => ({
-    key: x.id, label: `${x.a} + ${x.b}: ${int(x.n)} nota, ${int(x.pelanggan)} pelanggan, ${one(x.lift)} kali kebetulan`,
-    axisLabel: `${shortName(x.a, 2)} + ${shortName(x.b, 2)}`, value: x.n,
-  })), [a]);
+  const pasangan = a.pasangan.top.slice(0, 8);
+  const pasanganMax = Math.max(1, ...pasangan.map(x => x.n));
   const ragamBars = useMemo(() => a.ragam.map(x => ({ key: x.key, label: `${x.label}: ${int(x.n)} pelanggan, median ${one(x.medianJt)} jt`, axisLabel: x.key, value: x.medianJt })), [a]);
   const prodBars = useMemo(() => topBars(a.topProd, 1), [a]);
 
@@ -440,8 +438,19 @@ export function App() {
 
             <section className={`${styles.card} ${styles.span12}`} aria-label="Pasangan produk">
               <div className={styles.cardHead}><CardTitle hint={hints.pasangan}>Pasangan produk yang paling sering dibeli dalam satu nota, {scopeText}</CardTitle></div>
-              <BarChart data={pasanganBars} label="Pasangan produk" period="Jumlah nota. Nota = satu pelanggan di satu hari (berkas tidak punya nomor nota). Arahkan kursor untuk nama lengkap dan berapa kali lebih sering dari kebetulan." unit="nota"
-                averageLabel="Rata-rata" valueLabel="Dibeli bersama" categoryLabel="Pasangan" height={260} showAverage={false} formatValue={v => int(v)} />
+              <p className={styles.note}>Nota = satu pelanggan di satu hari (berkas tidak punya nomor nota). "Kali kebetulan" membandingkan dengan seberapa sering dua produk itu terbeli bersama bila dipilih acak.</p>
+              <ol className={styles.pairs}>
+                {pasangan.map(x => (
+                  <li key={x.id} className={styles.pair}>
+                    <span className={styles.pairName}>
+                      {x.a} + {x.b}
+                      <span className={styles.pairMeta}>{int(x.pelanggan)} pelanggan, {one(x.lift)} kali lebih sering dari kebetulan</span>
+                    </span>
+                    <span className={styles.pairTrack} aria-hidden="true"><span className={styles.pairFill} style={{ width: `${(x.n / pasanganMax) * 100}%` }} /></span>
+                    <span className={styles.pairValue}>{int(x.n)} nota</span>
+                  </li>
+                ))}
+              </ol>
             </section>
           </div>
         </>

@@ -49,6 +49,15 @@
 .span8 { grid-column: span 8; }
 .span12 { grid-column: span 12; }
 
+/* Daftar bar horizontal: nama pasangan produk panjang, jadi dibaca sebagai baris, bukan sumbu. */
+.pairs { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.pair { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) 72px; gap: 16px; align-items: center; }
+.pairName { display: grid; gap: 2px; min-width: 0; font-size: var(--text-sm); overflow-wrap: anywhere; }
+.pairMeta { color: var(--text-secondary); font-size: var(--text-xs); }
+.pairTrack { height: 10px; border-radius: var(--radius-pill); background: var(--surface-muted); overflow: hidden; }
+.pairFill { display: block; height: 100%; border-radius: var(--radius-pill); background: var(--series-1); }
+.pairValue { text-align: right; font-variant-numeric: tabular-nums; font-size: var(--text-sm); }
+
 .stack { display: grid; gap: 16px; align-content: start; }
 .tableScroll { overflow-x: auto; overscroll-behavior-x: contain; margin: -8px; padding: 8px; }
 
@@ -57,6 +66,8 @@
   .filters { justify-content: flex-start; margin-left: 0; }
   .span4, .span5, .span6, .span7, .span8 { grid-column: span 12; }
   .finding { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .pair { grid-template-columns: minmax(0, 1fr) 72px; }
+  .pairTrack { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (max-width: 480px) {
   .card { padding: 16px; }
