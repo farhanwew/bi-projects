@@ -102,7 +102,7 @@ export function RevisedPage() {
   return (
     <main className={styles.page}>
       <header className={styles.head}>
-        <h1 className={styles.h1}>Grafik yang direvisi</h1>
+        <h1 className={styles.h1}>Lampiran: perbaikan tiap grafik</h1>
         <p className={styles.lead}>Setiap grafik di dashboard versi 1 dibuat ulang mengikuti prinsip storytelling with data: judul berupa kesimpulan, satu warna sorot, label langsung, dan tanpa gridline atau legenda. Di tiap kartu tertulis bentuk sebelumnya dan alasan perubahannya. Periode April sampai September 2020, {int(A.n)} transaksi berbayar.</p>
       </header>
 

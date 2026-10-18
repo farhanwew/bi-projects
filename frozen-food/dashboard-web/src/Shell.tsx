@@ -14,8 +14,8 @@ const GROUPS: { title: string; routes: Route[] }[] = [
   { title: "Sebelum (versi 1)", routes: [{ id: "sebelum", label: "Dashboard umum", hint: "Semua grafik, tanpa audiens tertentu", page: App }] },
   {
     title: "Sesudah (versi 2)", routes: [
-      { id: "cerita", label: "Cerita untuk pemilik", hint: "Satu halaman, satu pesan", page: StoryPage },
-      { id: "revisi", label: "Grafik yang direvisi", hint: "Tiap grafik versi 1 dan alasannya", page: RevisedPage },
+      { id: "cerita", label: "Dashboard cerita", hint: "Untuk presentasi: satu pesan untuk pemilik usaha", page: StoryPage },
+      { id: "revisi", label: "Lampiran: perbaikan tiap grafik", hint: "Sebelum dan sesudah untuk tiap grafik versi 1", page: RevisedPage },
     ],
   },
 ];
