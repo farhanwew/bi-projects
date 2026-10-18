@@ -129,14 +129,16 @@ export function RevisedPage() {
 
         <Card n={2} wide before="tiga kartu terpisah: omzet, transaksi, dan tombol 'per hari'"
           title={`Agustus: omzet naik ${pct((aug.omzetJt / jul.omzetJt - 1) * 100)}, tetapi jumlah transaksi turun ${pct(Math.abs(txDrop))}`}
-          sub={`Atas: omzet per bulan (juta rupiah), bagian biru = pesanan jumbo. Bawah: jumlah transaksi per bulan. Nilai rata-rata per transaksi naik dari Rp${int(perTx(jul))} rb ke Rp${int(perTx(aug))} rb.`}
+          sub={`Dua grafik dengan bulan yang sejajar: omzet di atas, jumlah transaksi di bawah. Nilai rata-rata per transaksi naik dari Rp${int(perTx(jul))} rb ke Rp${int(perTx(aug))} rb.`}
           why="omzet dan transaksi bercerita bersama, tetapi di versi 1 audiens harus mencocokkan sendiri dua kartu dengan skala berbeda. Dua sumbu Y dalam satu grafik membingungkan, jadi keduanya disusun atas-bawah dengan bulan yang sejajar. Tombol 'per hari' dihapus karena mengulang grafik tren harian.">
           <div className={styles.stack}>
+            <p className={styles.panel}><b>Omzet per bulan</b> · juta rupiah · <span className={styles.key}><i className={styles.keyHi} /> pesanan jumbo</span></p>
             <VBars label="Omzet per bulan" W={1100} height={220} items={A.months.map(m => {
               const j = jumboByMonth.get(m.month) ?? 0;
               return { key: `o${m.month}`, label: m.short, value: m.omzetJt - j, text: int(m.omzetJt), hi: m.month === 8, top: j ? { value: j, text: `+${int(j)}` } : undefined,
                 detail: `${m.label}: ${rp(m.omzetJt)} dari ${int(m.baris)} transaksi${j ? `, termasuk ${rp(j)} dari pesanan jumbo` : ""}` };
             })} />
+            <p className={styles.panel}><b>Jumlah transaksi per bulan</b> · banyaknya transaksi, bukan rupiah</p>
             <VBars label="Transaksi per bulan" W={1100} height={170} items={A.months.map(m => ({ key: `t${m.month}`, label: m.short, value: m.baris, text: int(m.baris), hi: m.month === 8, detail: `${m.label}: ${int(m.baris)} transaksi, rata-rata Rp${int(perTx(m))} rb per transaksi` }))} />
           </div>
         </Card>
