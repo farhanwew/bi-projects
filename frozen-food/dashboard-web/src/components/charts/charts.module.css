@@ -36,3 +36,15 @@
   .hrow { grid-template-columns: minmax(0, 1fr) auto; }
   .htrack { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* Interaksi: baris keterangan di atas grafik, bar lain meredup, area sentuh transparan */
+.figure { margin: 0; }
+.readout { margin: 0 0 8px; min-height: 1.4em; color: var(--text-muted); font-size: var(--text-sm); }
+.readoutOn { color: var(--foreground); }
+.dim { opacity: 0.35; transition: opacity var(--duration-fast) var(--ease-standard); }
+.hrow, .hit { cursor: default; }
+.hrow { border-radius: 6px; outline: none; transition: opacity var(--duration-fast) var(--ease-standard); }
+.hrow:focus-visible { box-shadow: 0 0 0 2px var(--series-1); }
+.hit { fill: transparent; outline: none; }
+.hit:focus-visible { stroke: var(--series-1); stroke-width: 2; }
+.cross { stroke: var(--neutral-6); stroke-width: 1; stroke-dasharray: 3 3; }

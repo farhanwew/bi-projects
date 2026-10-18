@@ -121,10 +121,10 @@ export function RevisedPage() {
           sub="Omzet dalam juta rupiah. Pesanan jumbo = satu baris bernilai minimal Rp40 jt."
           why="tabel jarang efektif untuk presentasi langsung karena audiens harus membaca baris demi baris. Waterfall menunjukkan perubahan bertahap dari nilai awal ke nilai akhir, sehingga jawaban 'kenaikan datang dari mana' terlihat sekali pandang.">
           <Waterfall label="Waterfall omzet Juli ke Agustus" W={1100} height={280} steps={[
-            { key: "jul", label: "Juli", value: jul.omzetJt, text: int(jul.omzetJt), kind: "total" },
-            { key: "lain", label: "Pelanggan lain", value: augBase - jul.omzetJt, text: `−${int(jul.omzetJt - augBase)}`, kind: "delta" },
-            { key: "jumbo", label: "3 pesanan jumbo", value: augJumbo, text: `+${int(augJumbo)}`, kind: "delta", hi: true },
-            { key: "aug", label: "Agustus", value: aug.omzetJt, text: int(aug.omzetJt), kind: "total" },
+            { key: "jul", label: "Juli", value: jul.omzetJt, text: int(jul.omzetJt), kind: "total", detail: `Juli: omzet ${rp(jul.omzetJt)} dari ${int(jul.baris)} transaksi` },
+            { key: "lain", label: "Pelanggan lain", value: augBase - jul.omzetJt, text: `−${int(jul.omzetJt - augBase)}`, kind: "delta", detail: `Semua penjualan selain 3 pesanan jumbo: ${rp(augBase)} di Agustus, turun ${rp(jul.omzetJt - augBase)} dari Juli` },
+            { key: "jumbo", label: "3 pesanan jumbo", value: augJumbo, text: `+${int(augJumbo)}`, kind: "delta", hi: true, detail: `3 pesanan jumbo (${jumboQty.map(q => int(q)).join(", ")} dus) dari ${jumboBuyers.size} pembeli: +${rp(augJumbo)}` },
+            { key: "aug", label: "Agustus", value: aug.omzetJt, text: int(aug.omzetJt), kind: "total", detail: `Agustus: ${rp(aug.omzetJt)}, ${pct((augJumbo / aug.omzetJt) * 100)} dari pesanan jumbo` },
           ]} />
         </Card>
 
@@ -135,9 +135,10 @@ export function RevisedPage() {
           <div className={styles.stack}>
             <VBars label="Omzet per bulan" W={1100} height={220} items={A.months.map(m => {
               const j = jumboByMonth.get(m.month) ?? 0;
-              return { key: `o${m.month}`, label: m.short, value: m.omzetJt - j, text: int(m.omzetJt), hi: m.month === 8, top: j ? { value: j, text: `+${int(j)}` } : undefined };
+              return { key: `o${m.month}`, label: m.short, value: m.omzetJt - j, text: int(m.omzetJt), hi: m.month === 8, top: j ? { value: j, text: `+${int(j)}` } : undefined,
+                detail: `${m.label}: ${rp(m.omzetJt)} dari ${int(m.baris)} transaksi${j ? `, termasuk ${rp(j)} dari pesanan jumbo` : ""}` };
             })} />
-            <VBars label="Transaksi per bulan" W={1100} height={170} items={A.months.map(m => ({ key: `t${m.month}`, label: m.short, value: m.baris, text: int(m.baris), hi: m.month === 8 }))} />
+            <VBars label="Transaksi per bulan" W={1100} height={170} items={A.months.map(m => ({ key: `t${m.month}`, label: m.short, value: m.baris, text: int(m.baris), hi: m.month === 8, detail: `${m.label}: ${int(m.baris)} transaksi, rata-rata Rp${int(perTx(m))} rb per transaksi` }))} />
           </div>
         </Card>
 
@@ -158,7 +159,8 @@ export function RevisedPage() {
           why="angka 111 tanpa keterangan tampak seperti bukti pasar meluas dan berlawanan dengan cerita bahwa rekor Agustus semu. Memisahkan pelanggan baru menjelaskan angka itu daripada menyembunyikannya.">
           <VBars label="Pelanggan lama dan baru per bulan" height={210} items={A.months.filter(m => m.month !== 4).map(m => {
             const k = A.kohort.find(x => x.month === m.month)!;
-            return { key: `p${m.month}`, label: m.short, value: m.pelanggan - k.nBaru, text: int(m.pelanggan), hi: m.month === 8, top: { value: k.nBaru, text: int(k.nBaru) } };
+            return { key: `p${m.month}`, label: m.short, value: m.pelanggan - k.nBaru, text: int(m.pelanggan), hi: m.month === 8, top: { value: k.nBaru, text: int(k.nBaru) },
+              detail: `${m.label}: ${int(m.pelanggan)} pelanggan berbelanja, ${int(k.nBaru)} di antaranya baru (omzet pelanggan baru ${rp(k.baruJt)})` };
           })} />
         </Card>
 
@@ -180,6 +182,7 @@ export function RevisedPage() {
           why="dengan sumbu dari nol, selisih Rp6,6 jt dan Rp8,5 jt tampak hampir sama. Dosen membolehkan sumbu tidak mulai dari nol asal ditandai zig-zag supaya tetap jujur. Catatan: Agustus tidak naik per pelanggan walaupun omzetnya rekor.">
           <FloorLine label="Belanja per pelanggan" floor={6} height={200} points={A.months.map(m => ({
             key: `b${m.month}`, label: m.short, value: m.omzetJt / m.pelanggan, text: one(m.omzetJt / m.pelanggan), hi: m.month === 4 || m.month === 7,
+            detail: `${m.label}: ${rp(m.omzetJt / m.pelanggan)} per pelanggan (${rp(m.omzetJt)} dibagi ${int(m.pelanggan)} pelanggan)`,
           }))} />
         </Card>
 
@@ -189,6 +192,7 @@ export function RevisedPage() {
           why="nama pelanggan panjang, sehingga Arc membuang separuh label sumbu. Bar horizontal membuat nama terbaca dulu sebelum datanya. Sorotan pada pembeli yang hanya 2 kali belanja memperlihatkan dua jenis pembeli besar: yang rutin dan yang sekali borong.">
           <HBars label="Sepuluh pelanggan terbesar" items={A.topCust.map(c => ({
             key: c.id, label: c.nama, value: c.omzetJt, text: `${int(c.omzetJt)} jt`, note: `${int(c.baris)} transaksi`, hi: c.baris === minTx,
+            detail: `${c.nama}: ${rp(c.omzetJt)} (${pct(c.porsi)} omzet) dari ${int(c.baris)} transaksi, rata-rata ${rp(c.omzetJt / c.baris)} per transaksi`,
           }))} />
         </Card>
 
@@ -198,6 +202,7 @@ export function RevisedPage() {
           why={`label satu kata membuat "Okey" muncul 3 kali dan "Miami" 2 kali untuk produk yang berbeda. Nama lengkap di bar horizontal dan satu sorotan pada produk teratas, yang hampir ${int(A.topProd[0].omzetJt / A.topProd[1].omzetJt)} kali produk kedua, langsung menunjukkan ketimpangannya.`}>
           <HBars label="Sepuluh produk terbesar" items={A.topProd.map((p, i) => ({
             key: p.id, label: p.nama, value: p.omzetJt, text: `${int(p.omzetJt)} jt`, hi: i === 0,
+            detail: `${p.nama}: ${rp(p.omzetJt)}, ${pct(p.porsi)} dari seluruh omzet, ${int(p.baris)} transaksi`,
           }))} />
         </Card>
 
@@ -215,7 +220,8 @@ export function RevisedPage() {
           title={`${WD_FULL[wMax.w]} hari omzet terbesar; transaksi ${WD_FULL[wVal.w]} paling kecil nilainya`}
           sub="Rata-rata omzet per hari buka, juta rupiah. Minggu tutup."
           why={`versi 1 menjumlahkan omzet, padahal banyaknya hari buka tiap hari berbeda karena libur, sehingga perbandingannya tidak adil. Rata-rata per hari buka lebih jujur. ${WD_FULL[wMin.w]} omzetnya terendah, dan satu transaksi di hari ${WD_FULL[wVal.w]} rata-rata hanya Rp${int(perTxDay(wVal) * 1000)} rb, dibanding Rp${int(perTxDay(wMax) * 1000)} rb di hari ${WD_FULL[wMax.w]}.`}>
-          <VBars label="Rata-rata omzet per hari buka" height={200} items={week.map(x => ({ key: `w${x.w}`, label: WD[x.w], value: x.avg, text: one(x.avg), hi: x.w === wMax.w }))} />
+          <VBars label="Rata-rata omzet per hari buka" height={200} items={week.map(x => ({ key: `w${x.w}`, label: WD[x.w], value: x.avg, text: one(x.avg), hi: x.w === wMax.w,
+            detail: `${WD_FULL[x.w]}: rata-rata ${rp(x.avg)} per hari buka, ${int(x.tx)} transaksi per hari, Rp${int(perTxDay(x) * 1000)} rb per transaksi (${wd[x.w].days} hari buka)` }))} />
         </Card>
 
         <Card n={11} before="bar tiga bagian bulan (awal, tengah, akhir)"
@@ -237,6 +243,7 @@ export function RevisedPage() {
           why="nama produk terpotong dan ambang 50%, inti pesannya, tidak digambar. Bar horizontal dengan garis acuan dan sorotan hanya pada produk di atas ambang membuat risikonya langsung terlihat.">
           <HBars label="Porsi pembeli terbesar per produk" max={100} reference={50} items={A.bergantung.map(x => ({
             key: x.id, label: x.nama, value: x.pct, text: `${int(x.pct)}%`, note: x.pembeli, hi: x.pct >= 50,
+            detail: `${x.nama}: ${pct(x.pct)} dari penjualan ${rp(x.omzetJt)} dibeli ${x.pembeli}`,
           }))} />
         </Card>
 
@@ -246,6 +253,7 @@ export function RevisedPage() {
           why="satu warna tidak menunjuk temuannya. Kata 'terkait' dipakai, bukan 'menyebabkan': pembeli besar memang wajar membeli banyak jenis, jadi data ini belum membuktikan bahwa menawarkan lebih banyak jenis akan menaikkan belanja.">
           <HBars label="Median belanja menurut ragam produk" items={A.ragam.map(g => ({
             key: g.key, label: g.label, value: g.medianJt, text: `${one(g.medianJt)} jt`, note: `${int(g.n)} pelanggan`, hi: g === ragamTop,
+            detail: `${g.label}: ${int(g.n)} pelanggan, median total belanja ${rp(g.medianJt)}`,
           }))} />
         </Card>
 
@@ -255,6 +263,7 @@ export function RevisedPage() {
           why="grafik jaringan sulit dibaca orang awam, foto produk hanya dekorasi, dan istilah 'lift' tidak dijelaskan. Bar horizontal dengan keterangan 'kali lebih sering dari kebetulan' lebih mudah dipahami; pasangan lintas merek disorot karena itulah kandidat promo paket.">
           <HBars label="Pasangan produk yang sering dibeli bersama" items={pairs.map(p => ({
             key: p.id, label: `${p.a} + ${p.b}`, value: p.n, text: `${int(p.n)} nota`, note: `${one(p.lift)} kali lebih sering dari kebetulan`, hi: p === pairHi,
+            detail: `${p.a} + ${p.b}: ${int(p.n)} nota oleh ${int(p.pelanggan)} pelanggan; ${p.pctA}% nota yang berisi produk pertama juga berisi produk kedua`,
           }))} />
         </Card>
       </div>

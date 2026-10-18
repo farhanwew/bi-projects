@@ -1,7 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BULAN, calendar, type Dict, type Row } from "./analytics";
 import raw from "./data.json";
 import { int, one, pct, rp } from "./format";
+import { HBars } from "./components/charts/charts";
+import chart from "./components/charts/charts.module.css";
 import styles from "./StoryPage.module.css";
 
 /** Versi 2: satu halaman bercerita untuk satu audiens (pemilik) dan satu tujuan. Semua angka dihitung dari data, tidak ditulis tangan. */
@@ -63,27 +65,36 @@ function MonthlyChart({ s }: { s: ReturnType<typeof useStory> }) {
   const bw = band * 0.62;
   const cx = (i: number) => 8 + band * (i + 0.5);
   const julIdx = s.months.indexOf(s.jul);
+  const [active, setActive] = useState<number | null>(null);
+  const detail = (m: (typeof s.months)[number]) => `${m.label}: ${rp(m.base + m.jumbo)}${m.jumbo ? `, termasuk ${rp(m.jumbo)} dari 3 pesanan jumbo; tanpa itu ${rp(m.base)}` : ""}`;
+  const cur = s.months.find(m => m.m === active);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" className={styles.chart}
+    <figure className={chart.figure}>
+    <p className={`${chart.readout} ${cur ? chart.readoutOn : ""}`} aria-live="polite">{cur ? detail(cur) : "Arahkan kursor, sentuh, atau Tab ke bar untuk detail."}</p>
+    <svg viewBox={`0 0 ${W} ${H}`} role="group" className={styles.chart}
       aria-label={`Omzet per bulan dalam juta rupiah. Agustus ${int(s.aug.base + s.aug.jumbo)}, terdiri dari ${int(s.aug.base)} tanpa pesanan jumbo dan ${int(s.aug.jumbo)} dari pesanan jumbo.`}>
       <line x1={cx(julIdx) + bw / 2} x2={W - 8} y1={y(s.jul.base)} y2={y(s.jul.base)} className={styles.ref} />
       {s.months.map((m, i) => {
         const isAug = m === s.aug;
         const total = m.base + m.jumbo;
         return (
-          <g key={m.m}>
+          <g key={m.m} className={active !== null && active !== m.m ? chart.dim : ""}>
             <rect x={cx(i) - bw / 2} y={y(m.base)} width={bw} height={y(0) - y(m.base)} className={styles.base} />
             {m.jumbo > 0 && <rect x={cx(i) - bw / 2} y={y(total)} width={bw} height={y(m.base) - y(total)} className={styles.jumbo} />}
             {m.jumbo > 0 && <text x={cx(i)} y={(y(total) + y(m.base)) / 2 + 5} textAnchor="middle" className={styles.inBar}>+{int(m.jumbo)}</text>}
             <text x={cx(i)} y={y(total) - 8} textAnchor="middle" className={isAug ? styles.valueStrong : styles.value}>{int(total)}</text>
             {isAug && <text x={cx(i)} y={y(m.base) + 20} textAnchor="middle" className={styles.inBarDark}>{int(m.base)}</text>}
             <text x={cx(i)} y={H - 10} textAnchor="middle" className={styles.axis}>{m.short}</text>
+            <rect x={8 + band * i} y={TOP} width={band} height={H - TOP} className={chart.hit} tabIndex={0} aria-label={detail(m)}
+              onPointerEnter={() => setActive(m.m)} onPointerDown={() => setActive(m.m)} onPointerLeave={() => setActive(null)}
+              onFocus={() => setActive(m.m)} onBlur={() => setActive(null)} />
           </g>
         );
       })}
       <text x={8} y={20} className={styles.note1}>Agustus tampak rekor, tetapi {int(s.aug.jumbo)} jt berasal dari 3 pesanan.</text>
       <text x={8} y={40} className={styles.note2}>Tanpa itu, Agustus ({int(s.aug.base)} jt) di bawah Juni dan Juli (garis putus-putus).</text>
     </svg>
+    </figure>
   );
 }
 
@@ -123,15 +134,10 @@ export function StoryPage() {
       <div className={styles.row2}>
         <section className={styles.card} aria-label="Ukuran pesanan">
           <h2 className={styles.h2}>Seberapa jumbo pesanan itu? Jumlah dus per pesanan</h2>
-          <ul className={styles.sizes}>
-            {sizes.map(x => (
-              <li key={x.key} className={styles.size}>
-                <span className={styles.sizeName}>{x.label}</span>
-                <span className={styles.track}><span className={x.key === "jumbo" ? styles.fillHi : styles.fill} style={{ width: `${(x.v / s.jumboMax) * 100}%` }} /></span>
-                <span className={styles.sizeValue}>{x.text}</span>
-              </li>
-            ))}
-          </ul>
+          <HBars label="Jumlah dus per pesanan" items={sizes.map(x => ({
+            key: x.key, label: x.label, value: x.v, text: x.text, hi: x.key === "jumbo",
+            detail: x.key === "jumbo" ? `${s.jumboRows} pesanan jumbo dari ${s.buyers} pembeli: ${x.text}, semuanya di Agustus` : `${x.label}: ${x.text}`,
+          }))} />
         </section>
         <section className={styles.card} aria-label="Usulan">
           <h2 className={styles.h2}>Yang kami usulkan</h2>
