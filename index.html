@@ -123,6 +123,13 @@
     .side-link:hover { background: #F1F5F9; }
     .side-link[aria-current="page"] { background: #E0F2FE; color: #0C4A6E; font-weight: 600; }
     .side-link[aria-current="page"] small { color: #0369A1; }
+    /* Buka / tutup sidebar */
+    .side-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; width: 2rem; height: 2rem; flex: none; border-radius: .5rem; border: 1px solid #E2E8F0; background: #fff; color: #475569; font-size: .8rem; cursor: pointer; }
+    .side-toggle:hover { background: #F1F5F9; color: #0F172A; }
+    .side-open { display: none; position: fixed; top: .75rem; left: .75rem; z-index: 60; width: auto; padding: 0 .75rem; font-weight: 600; box-shadow: 0 2px 8px rgba(15, 23, 42, .12); }
+    body.side-closed #sidebar { display: none; }
+    body.side-closed .side-open { display: inline-flex; }
+    body.side-closed #view-laporan > header > div { padding-left: 6.5rem; }
     /* Network graph container */
     #network-container {
       width: 100%;
@@ -138,12 +145,25 @@
 
   <div class="lg:flex min-h-screen">
   <!-- SIDEBAR: laporan eksekutif ini + dashboard sebelumnya -->
-  <aside class="lg:w-72 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 lg:sticky lg:top-0 lg:h-screen overflow-y-auto" aria-label="Navigasi">
+  <aside id="sidebar" class="lg:w-72 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 lg:sticky lg:top-0 lg:h-screen overflow-y-auto" aria-label="Navigasi">
     <div class="p-5 space-y-6">
-      <div>
-        <p class="font-extrabold text-slate-900 text-base leading-snug">Penjualan frozen food 2020</p>
-        <p class="text-xs text-slate-500 mt-1">6.720 transaksi berbayar · Rp 4,53 miliar</p>
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="font-extrabold text-slate-900 text-base leading-snug">Penjualan frozen food 2020</p>
+          <p class="text-xs text-slate-500 mt-1">6.720 transaksi berbayar · Rp 4,53 miliar</p>
+        </div>
+        <button id="side-close" type="button" class="side-toggle" aria-label="Tutup sidebar" title="Tutup sidebar">
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
       </div>
+      <nav aria-label="Dashboard">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Dashboard sebelumnya</p>
+        <ul class="space-y-0.5">
+          <li><a class="side-link" href="#/v1">Versi 1: dashboard umum<small>Semua grafik, tanpa audiens tertentu</small></a></li>
+          <li><a class="side-link" href="#/pemilik">Versi 2: untuk pemilik usaha<small>Rekor Agustus dan patokan target</small></a></li>
+          <li><a class="side-link" href="#/crm">Versi 2: untuk marketing / CRM<small>Pelanggan yang mulai menjauh</small></a></li>
+        </ul>
+      </nav>
       <nav aria-label="Laporan eksekutif">
         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Laporan eksekutif (halaman ini)</p>
         <ul class="space-y-0.5">
@@ -154,18 +174,13 @@
           <li><a class="side-link" href="#rekomendasi">Rekomendasi aksi<small>Siapa melakukan apa</small></a></li>
         </ul>
       </nav>
-      <nav aria-label="Dashboard">
-        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Dashboard sebelumnya</p>
-        <ul class="space-y-0.5">
-          <li><a class="side-link" href="#/v1">Versi 1: dashboard umum<small>Semua grafik, tanpa audiens tertentu</small></a></li>
-          <li><a class="side-link" href="#/pemilik">Versi 2: untuk pemilik usaha<small>Rekor Agustus dan patokan target</small></a></li>
-          <li><a class="side-link" href="#/crm">Versi 2: untuk marketing / CRM<small>Pelanggan yang mulai menjauh</small></a></li>
-        </ul>
-      </nav>
     </div>
   </aside>
 
   <div class="flex-1 min-w-0">
+  <button id="side-open" type="button" class="side-toggle side-open" aria-label="Buka sidebar" title="Buka sidebar">
+    <i class="fa-solid fa-bars"></i><span>Menu</span>
+  </button>
   <div id="view-laporan">
   <header class="bg-white border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
@@ -1329,6 +1344,16 @@
       }
       window.addEventListener("hashchange", route);
       route();
+
+      // Buka / tutup sidebar; pilihan diingat di browser (tanpa efek bila penyimpanan diblokir)
+      const setSide = (closed) => {
+        document.body.classList.toggle("side-closed", closed);
+        try { localStorage.setItem("sidebar-tutup", closed ? "1" : "0"); } catch (e) {}
+        window.dispatchEvent(new Event("resize")); // lebar konten berubah, grafik menyesuaikan
+      };
+      document.getElementById("side-close").addEventListener("click", () => setSide(true));
+      document.getElementById("side-open").addEventListener("click", () => setSide(false));
+      try { if (localStorage.getItem("sidebar-tutup") === "1") document.body.classList.add("side-closed"); } catch (e) {}
     })();
   </script>
 </body>
