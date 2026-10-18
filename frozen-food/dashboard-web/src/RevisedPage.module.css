@@ -22,6 +22,10 @@
 .why { margin: auto 0 0; padding-top: 10px; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: var(--text-sm); }
 .why b { color: var(--foreground); font-weight: 600; }
 .stack { display: grid; gap: 12px; }
+/* Kartu berisi teks saja: isinya di tengah tinggi kartu, bukan menempel di atas dengan ruang kosong di bawah */
+.center { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+.bigNote { margin: 0; color: var(--text-secondary); font-size: var(--text-base); }
+.bigNote b { color: var(--foreground); font-weight: 600; }
 
 .bigRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .big, .bigHi { display: grid; gap: 4px; }

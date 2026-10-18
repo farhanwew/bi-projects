@@ -82,13 +82,13 @@ const ragamTop = A.ragam[A.ragam.length - 1], ragamPrev = A.ragam[A.ragam.length
 const pairs = A.pasangan.top.slice(0, 6);
 const pairHi = pairs.filter(p => p.bedaMerek).reduce((a, b) => (b.lift > a.lift ? b : a));
 
-function Card({ n, before, title, sub, why, wide, children }: { n: number; before: string; title: string; sub: string; why: ReactNode; wide?: boolean; children: ReactNode }) {
+function Card({ n, before, title, sub, why, wide, center, children }: { n: number; before: string; title: string; sub: string; why: ReactNode; wide?: boolean; center?: boolean; children: ReactNode }) {
   return (
     <section className={`${styles.card} ${wide ? styles.wide : ""}`} aria-labelledby={`r${n}`}>
       <p className={styles.before}>Revisi {n} · sebelumnya: {before}</p>
       <h2 id={`r${n}`} className={styles.title}>{title}</h2>
       <p className={styles.sub}>{sub}</p>
-      <div className={styles.chart}>{children}</div>
+      <div className={`${styles.chart} ${center ? styles.center : ""}`}>{children}</div>
       <p className={styles.why}><b>Kenapa diubah:</b> {why}</p>
     </section>
   );
@@ -223,7 +223,7 @@ export function RevisedPage() {
             detail: `${WD_FULL[x.w]}: rata-rata ${rp(x.avg)} per hari buka, ${int(x.tx)} transaksi per hari, Rp${int(perTxDay(x) * 1000)} rb per transaksi (${wd[x.w].days} hari buka)` }))} />
         </Card>
 
-        <Card n={11} before="bar tiga bagian bulan (awal, tengah, akhir)"
+        <Card n={11} center before="bar tiga bagian bulan (awal, tengah, akhir)"
           title={`Omzet per hari tertinggi di tanggal 21 sampai akhir bulan`}
           sub="Rata-rata omzet per hari kalender."
           why={`hanya tiga angka yang berdekatan, dan buku menyarankan teks bila angkanya sedikit. Bagian akhir mencakup ${phase[2].days} hari, sedangkan dua lainnya ${phase[0].days}, jadi angkanya dibagi per hari agar adil.`}>
@@ -234,6 +234,7 @@ export function RevisedPage() {
               </div>
             ))}
           </div>
+          <p className={styles.bigNote}>Per hari, akhir bulan <b>{pct((phase[2].perDay / phase[0].perDay - 1) * 100)} lebih tinggi</b> daripada awal bulan, dan {pct((phase[2].perDay / phase[1].perDay - 1) * 100)} lebih tinggi daripada pertengahan bulan.</p>
         </Card>
 
         <Card n={12} before="bar vertikal 'Konsentrasi single buyer' tanpa garis acuan"
