@@ -91,6 +91,9 @@ export function StoryPage() {
   const s = useStory();
   const total = s.aug.base + s.aug.jumbo;
   const drop = (1 - s.aug.base / s.jul.base) * 100;
+  const sep = s.months.find(x => x.m === 9)!;
+  const sepDrop = (1 - (sep.base + sep.jumbo) / total) * 100; // September terlihat turun jika Agustus jadi patokan
+  const sepUp = (sep.base / s.aug.base - 1) * 100; // tetapi tanpa pesanan jumbo justru naik
   const baseSince = s.months.filter(x => x.m >= 6).map(x => x.base);
   const sizes = [
     { key: "median", label: "Pesanan biasa (median)", v: s.medianDus, text: `${int(s.medianDus)} dus` },
@@ -132,6 +135,7 @@ export function StoryPage() {
         </section>
         <section className={styles.card} aria-label="Usulan">
           <h2 className={styles.h2}>Yang kami usulkan</h2>
+          <p className={styles.stake}>Jika Rp{int(total)} jt dijadikan patokan, September (Rp{int(sep.base + sep.jumbo)} jt) tampak turun {one(sepDrop)}%, padahal tanpa pesanan jumbo omzetnya naik {one(sepUp)}%.</p>
           <ol className={styles.actions}>
             <li><b>Ganti patokan target.</b> Pakai omzet tanpa pesanan jumbo: Rp{int(Math.min(...baseSince))} sampai {int(Math.max(...baseSince))} jt per bulan sejak Juni, bukan Rp{int(total)} jt.</li>
             <li><b>Jaga pembeli besar.</b> Kedua pembeli jumbo itu membeli {rp(s.buyersAug)} di Agustus, tetapi hanya {rp(s.buyersSep)} di September.</li>
