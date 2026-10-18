@@ -1,7 +1,9 @@
 import { analyze, BULAN, calendar, firstMonths, type Dict, type Row } from "./analytics";
-import { HBars } from "./components/charts/charts";
+import type { ReactNode } from "react";
+import { HBars, VBars } from "./components/charts/charts";
 import raw from "./data.json";
-import { int, pct, rp } from "./format";
+import { int, one, pct, rp } from "./format";
+import rev from "./RevisedPage.module.css";
 import styles from "./StoryPage.module.css";
 
 /**
@@ -60,6 +62,81 @@ const smallActive = all.filter(c => c.prods.size <= 5 && recency(c) <= 30).lengt
 const pair = A.pasangan.top.filter(p => p.bedaMerek).reduce((a, b) => (b.lift > a.lift ? b : a));
 const short = (name: string) => name.split(" ").slice(0, 2).join(" ");
 
+// ===== Detail analisis pelanggan =====
+type CustX = Cust & { days: number[]; first: number };
+const daysOf = new Map<number, Set<number>>();
+for (const r of ROWS) (daysOf.get(r[CUST]) ?? daysOf.set(r[CUST], new Set()).get(r[CUST])!).add(r[DAY]);
+const cx: CustX[] = all.map(c => { const ds = [...daysOf.get(c.id)!].sort((a, b) => a - b); return { ...c, days: ds, first: ds[0] }; });
+const median = (a: number[]) => { const s = [...a].sort((x, y) => x - y); const h = s.length >> 1; return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2; };
+
+// 1. arus pelanggan per bulan: bertahan (belanja bulan lalu juga), kembali (pernah, tapi tidak bulan lalu), baru, berhenti
+const activeIn = (m: number) => new Set(all.filter(c => c.months.has(m)).map(c => c.id));
+const flow = [5, 6, 7, 8, 9].map(m => {
+  const cur = activeIn(m), prev = activeIn(m - 1);
+  let kept = 0, back = 0, fresh = 0;
+  for (const id of cur) { if (prev.has(id)) kept++; else if (FIRST.get(id) === m) fresh++; else back++; }
+  const stop = [...prev].filter(id => !cur.has(id)).length;
+  return { m, active: cur.size, kept, back, fresh, stop };
+});
+const worstStop = flow.reduce((a, b) => (b.stop > a.stop ? b : a));
+
+// 2. segmen dari lama tidak belanja (R) dan banyaknya hari belanja (F)
+const SEGS = [
+  { key: "juara", label: "Juara", note: "aktif, belanja 20 hari atau lebih" },
+  { key: "setia", label: "Setia", note: "aktif, belanja 6 sampai 19 hari" },
+  { key: "pupuk", label: "Perlu dipupuk", note: "aktif, baru belanja 1 sampai 5 hari" },
+  { key: "baru", label: "Baru", note: "pertama belanja dalam 30 hari terakhir" },
+  { key: "berisiko", label: "Berisiko", note: "dulu rutin (6 hari atau lebih), 31 sampai 90 hari tidak belanja" },
+  { key: "menjauh", label: "Mulai menjauh", note: "jarang belanja, 31 sampai 90 hari tidak belanja" },
+  { key: "hilang", label: "Hilang", note: "lebih dari 90 hari tidak belanja" },
+] as const;
+const segOf = (c: CustX): (typeof SEGS)[number]["key"] => {
+  const r = END - c.last, f = c.days.length;
+  if (r > 90) return "hilang";
+  if (r > 30) return f >= 6 ? "berisiko" : "menjauh";
+  if (END - c.first <= 30) return "baru";
+  return f >= 20 ? "juara" : f >= 6 ? "setia" : "pupuk";
+};
+const segs = SEGS.map(sg => {
+  const list = cx.filter(c => segOf(c) === sg.key);
+  const omzet = list.reduce((t, c) => t + c.omzet, 0);
+  return { ...sg, n: list.length, omzet, share: (omzet / A.totalJt) * 100 };
+});
+const core = segs.filter(x => x.key === "juara" || x.key === "setia");
+const coreN = core.reduce((t, x) => t + x.n, 0), coreShare = core.reduce((t, x) => t + x.share, 0);
+
+// 3. pelanggan rutin (minimal 5 hari belanja) yang terlambat: lama tidak belanja > 2 kali jeda biasanya (dan > 14 hari)
+const late = cx.filter(c => c.days.length >= 5).map(c => {
+  const gaps = c.days.slice(1).map((d, i) => d - c.days[i]);
+  return { ...c, gap: median(gaps), rec: END - c.last };
+}).filter(c => c.rec > Math.max(2 * c.gap, 14)).sort((a, b) => b.omzet - a.omzet);
+const lateOmzet = late.reduce((t, c) => t + c.omzet, 0);
+const lateMax = late.reduce((a, b) => (b.rec / b.gap > a.rec / a.gap ? b : a));
+
+// 4. frekuensi belanja: banyaknya hari belanja
+const FREQ = [["1 hari", 1, 1], ["2 sampai 5 hari", 2, 5], ["6 sampai 20 hari", 6, 20], ["21 sampai 50 hari", 21, 50], ["lebih dari 50 hari", 51, Infinity]] as const;
+const freq = FREQ.map(([label, lo, hi]) => {
+  const list = cx.filter(c => c.days.length >= lo && c.days.length <= hi);
+  const omzet = list.reduce((t, c) => t + c.omzet, 0);
+  return { label, lo, n: list.length, share: (omzet / A.totalJt) * 100 };
+});
+const often = freq.filter(f => f.lo >= 6);
+const oftenN = often.reduce((t, f) => t + f.n, 0), oftenShare = often.reduce((t, f) => t + f.share, 0);
+
+// 5. konsentrasi
+const sortedOmzet = all.map(c => c.omzet).sort((a, b) => a - b);
+const bottomHalf = sortedOmzet.slice(0, Math.floor(sortedOmzet.length / 2)).reduce((t, v) => t + v, 0);
+
+function Card({ title, sub, wide, center, children }: { title: string; sub: string; wide?: boolean; center?: boolean; children: ReactNode }) {
+  return (
+    <section className={`${rev.card} ${wide ? rev.wide : ""}`}>
+      <h3 className={rev.title}>{title}</h3>
+      <p className={rev.sub}>{sub}</p>
+      <div className={`${rev.chart} ${center ? rev.center : ""}`}>{children}</div>
+    </section>
+  );
+}
+
 export function CrmPage() {
   return (
     <main className={styles.page}>
@@ -115,6 +192,68 @@ export function CrmPage() {
           <li><b>Tindak lanjut pelanggan baru.</b> Hanya {pct((newBack / newTotal) * 100)} pelanggan baru belanja lagi di bulan berikutnya; hubungi mereka dalam 30 hari pertama.</li>
           <li><b>Paket produk.</b> Tawarkan paket {short(pair.a)} + {short(pair.b)} (dibeli bersama {pair.lift.toLocaleString("id-ID")} kali lebih sering dari kebetulan) ke {smallActive} pelanggan aktif yang baru membeli 1 sampai 5 jenis produk.</li>
         </ol>
+      </section>
+
+      <section className={styles.detail} aria-labelledby="crm-detail">
+        <div className={styles.detailHead}>
+          <div>
+            <h2 id="crm-detail" className={styles.detailTitle}>Detail analisis pelanggan</h2>
+            <p className={styles.detailSub}>Dari data yang sama: arus pelanggan, segmen, pelanggan yang terlambat dari kebiasaannya, dan seberapa terpusat omzetnya.</p>
+          </div>
+        </div>
+        <div className={rev.grid}>
+          <Card wide title={`${BULAN[worstStop.m]}: ${worstStop.stop} pelanggan berhenti belanja, terbanyak selama periode; hanya ${flow.find(f => f.m === worstStop.m)!.fresh} pelanggan baru`}
+            sub="Atas: pelanggan aktif tiap bulan (abu-abu = sudah pernah belanja, biru = baru). Bawah: pelanggan yang belanja bulan sebelumnya tetapi tidak bulan itu.">
+            <div className={rev.stack}>
+              <p className={rev.panel}><b>Pelanggan aktif per bulan</b> · <span className={rev.key}><i className={rev.keyHi} /> pelanggan baru</span></p>
+              <VBars label="Pelanggan aktif per bulan" W={1100} height={200} items={flow.map(f => ({
+                key: `a${f.m}`, label: BULAN[f.m].slice(0, 3), value: f.kept + f.back, text: int(f.active), hi: f.m === worstStop.m,
+                top: { value: f.fresh, text: int(f.fresh) },
+                detail: `${BULAN[f.m]}: ${f.active} pelanggan aktif; ${f.kept} bertahan dari bulan lalu, ${f.back} kembali setelah absen, ${f.fresh} baru`,
+              }))} />
+              <p className={rev.panel}><b>Pelanggan yang berhenti</b> · belanja bulan sebelumnya, tidak bulan itu</p>
+              <VBars label="Pelanggan yang berhenti per bulan" W={1100} height={150} items={flow.map(f => ({
+                key: `s${f.m}`, label: BULAN[f.m].slice(0, 3), value: f.stop, text: int(f.stop), hi: f.m === worstStop.m,
+                detail: `${BULAN[f.m]}: ${f.stop} pelanggan yang belanja di ${BULAN[f.m - 1]} tidak belanja lagi`,
+              }))} />
+            </div>
+          </Card>
+
+          <Card wide title={`${coreN} pelanggan Juara dan Setia menghasilkan ${pct(coreShare)} omzet; ${segs.filter(x => x.key === "berisiko" || x.key === "menjauh").reduce((t, x) => t + x.n, 0)} pelanggan lainnya mulai menjauh`}
+            sub="Segmen dari lama tidak belanja dan banyaknya hari belanja. Bar = porsi omzet April sampai September.">
+            <HBars label="Segmen pelanggan" items={segs.map(x => ({
+              key: x.key, label: x.label, value: x.share, text: `${pct(x.share)} omzet`, note: `${int(x.n)} pelanggan · ${x.note}`,
+              hi: x.key === "berisiko" || x.key === "menjauh",
+              detail: `${x.label}: ${int(x.n)} pelanggan, total belanja ${rp(x.omzet)} (${pct(x.share)} omzet). ${x.note}.`,
+            }))} />
+          </Card>
+
+          <Card wide title={`${late.length} pelanggan rutin terlambat dari kebiasaannya; total belanja mereka ${rp(lateOmzet)}`}
+            sub="Pelanggan dengan minimal 5 hari belanja yang sudah tidak belanja lebih dari dua kali jeda biasanya. Ini daftar yang lebih tajam daripada sekadar '30 hari tidak belanja'.">
+            <HBars label="Pelanggan rutin yang terlambat" items={late.slice(0, 8).map(c => ({
+              key: `l${c.id}`, label: DICT.pelanggan[c.id], value: c.omzet, text: `${int(c.omzet)} jt`, hi: c === lateMax,
+              note: `biasanya tiap ${int(c.gap)} hari, kini ${c.rec} hari tidak belanja`,
+              detail: `${DICT.pelanggan[c.id]}: biasanya belanja tiap ${int(c.gap)} hari, sudah ${c.rec} hari tidak belanja (${one(c.rec / c.gap)} kali jeda biasanya); total belanja ${rp(c.omzet)}`,
+            }))} />
+          </Card>
+
+          <Card title={`${oftenN} pelanggan yang belanja 6 hari atau lebih menghasilkan ${pct(oftenShare)} omzet`}
+            sub="Pelanggan menurut banyaknya hari belanja selama April sampai September. Bar = porsi omzet.">
+            <HBars label="Frekuensi belanja" items={freq.map(f => ({
+              key: f.label, label: f.label, value: f.share, text: pct(f.share), note: `${int(f.n)} pelanggan`, hi: f.lo >= 6,
+              detail: `Belanja ${f.label}: ${int(f.n)} pelanggan, ${pct(f.share)} omzet`,
+            }))} />
+          </Card>
+
+          <Card center title="Omzet sangat terpusat pada sedikit pelanggan" sub="Porsi omzet April sampai September.">
+            <div className={rev.bigRow}>
+              <div className={rev.bigHi}><strong>{pct(A.pareto.top10Pct)}</strong><span>dari 10 pelanggan teratas</span></div>
+              <div className={rev.big}><strong>{A.pareto.pelanggan80}</strong><span>pelanggan sudah menghasilkan 80%</span></div>
+              <div className={rev.big}><strong>{pct((bottomHalf / A.totalJt) * 100)}</strong><span>dari separuh pelanggan terbawah ({Math.floor(sortedOmzet.length / 2)})</span></div>
+            </div>
+            <p className={rev.bigNote}>Kehilangan satu pelanggan besar terasa jauh lebih berat daripada kehilangan puluhan pelanggan kecil, jadi retensi sebaiknya dimulai dari pelanggan bernilai tinggi.</p>
+          </Card>
+        </div>
       </section>
 
       <footer className={styles.foot}>
