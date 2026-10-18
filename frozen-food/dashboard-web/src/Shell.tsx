@@ -1,11 +1,12 @@
 import { useEffect, useState, type ComponentType } from "react";
 import { App } from "./App";
+import { CrmPage } from "./CrmPage";
 import { StoryPage } from "./StoryPage";
 import styles from "./Shell.module.css";
 
 /**
  * Kerangka dengan sidebar untuk berpindah antara versi 1 (sebelum teori storytelling) dan versi 2 (sesudah).
- * Rute memakai hash supaya tetap jalan di GitHub Pages tanpa konfigurasi server: #/sebelum dan #/cerita.
+ * Rute memakai hash supaya tetap jalan di GitHub Pages tanpa konfigurasi server: #/sebelum, #/cerita, #/crm.
  * Arc versi gratis tidak punya sidebar (sidebar-rail dan workspace-sidebar hanya Pro), jadi navigasinya dibuat sendiri.
  */
 type Route = { id: string; label: string; hint: string; page: ComponentType };
@@ -13,7 +14,8 @@ const GROUPS: { title: string; routes: Route[] }[] = [
   { title: "Sebelum (versi 1)", routes: [{ id: "sebelum", label: "Dashboard umum", hint: "Semua grafik, tanpa audiens tertentu", page: App }] },
   {
     title: "Sesudah (versi 2)", routes: [
-      { id: "cerita", label: "Dashboard versi 2", hint: "Cerita untuk pemilik usaha, lalu detail pendukung", page: StoryPage },
+      { id: "cerita", label: "Untuk pemilik usaha", hint: "Rekor Agustus dan patokan target, lalu detail pendukung", page: StoryPage },
+      { id: "crm", label: "Untuk marketing / CRM", hint: "Pelanggan yang mulai menjauh dan pelanggan baru", page: CrmPage },
     ],
   },
 ];
