@@ -8,7 +8,7 @@
 .kpi { display: grid; gap: 6px; align-content: start; padding: 16px 20px; border: 1px solid var(--border); border-radius: var(--radius-surface); background: var(--surface); }
 .kpi > span:first-child { color: var(--text-secondary); font-size: var(--text-sm); }
 .kpi small { color: var(--text-muted); font-size: var(--text-xs); }
-.kpiValue { font-size: var(--text-2xl); }
+.kpiBig { font-family: var(--font-display); font-size: clamp(32px, 3.2vw, 44px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .kpiWhy { margin: -6px 0 0; color: var(--text-secondary); font-size: var(--text-sm); }
 
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: stretch; }

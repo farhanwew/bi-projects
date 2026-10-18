@@ -6,11 +6,9 @@ import styles from "./charts.module.css";
  * bar vertikal dengan sorotan dan tumpukan, waterfall, dan garis dengan sumbu tidak mulai dari nol (diberi tanda zig-zag).
  * Aturannya sama di semua grafik: satu warna sorot, sisanya abu-abu, label langsung, tanpa gridline, sumbu, dan legenda.
  *
- * Interaksi meniru Arc bar chart: arahkan kursor, sentuh, atau Tab ke sebuah bar; bar lain meredup dan baris keterangan
- * di atas grafik menampilkan detailnya (`detail`, atau label dan nilainya bila `detail` kosong).
+ * Interaksi meniru Arc bar chart: arahkan kursor, sentuh, atau Tab ke sebuah bar; bar lain meredup dan keterangan
+ * mengambang di atas grafik menampilkan detailnya (`detail`, atau label dan nilainya bila `detail` kosong).
  */
-
-const HINT = "Arahkan kursor, sentuh, atau Tab ke bar untuk detail.";
 
 /** Satu item aktif per grafik, dengan handler yang sama untuk mouse, sentuh, dan keyboard. */
 function useActive() {
@@ -27,7 +25,7 @@ function useActive() {
 }
 
 function Readout({ text }: { text: string | null }) {
-  return <p className={`${styles.readout} ${text ? styles.readoutOn : ""}`} aria-live="polite">{text ?? HINT}</p>;
+  return <p className={`${styles.readout} ${text ? styles.readoutOn : ""}`} aria-live="polite">{text ?? ""}</p>;
 }
 
 export type HBar = { key: string; label: string; value: number; text: string; note?: string; hi?: boolean; detail?: string };

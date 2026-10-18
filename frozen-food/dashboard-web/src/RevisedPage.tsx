@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { AnimatedCounter } from "@/components/arc/animated-counter/animated-counter";
-import { Badge } from "@/components/arc/badge/badge";
 import { BrushChart } from "@/components/arc/brush-chart/brush-chart";
 import { SlopeChart } from "@/components/arc/slope-chart/slope-chart";
 import { analyze, BULAN, calendar, firstMonths, type Dict, type Row } from "./analytics";
@@ -110,7 +109,7 @@ export function RevisedPage() {
       <section className={styles.kpis} aria-label="Angka utama">
         <div className={styles.kpi}><span>Total omzet</span><AnimatedCounter value={total / 1000} decimals={2} suffix={" miliar"} locale="id-ID" /><small>{int(A.n)} transaksi berbayar; 58 baris Rp0 (sampel, bonus) tidak dihitung</small></div>
         <div className={styles.kpi}><span>Bulan tertinggi</span><AnimatedCounter value={aug.omzetJt} decimals={1} suffix={" jt"} locale="id-ID" /><small>Agustus, {pct((augJumbo / aug.omzetJt) * 100)} dari 3 pesanan jumbo</small></div>
-        <div className={styles.kpi}><span>Agustus ke September</span><span className={styles.kpiValue}><Badge tone="danger" size="sm">{one(sepChange)}%</Badge></span><small>Pembanding bulan terakhir, bukan April (bulan terendah)</small></div>
+        <div className={styles.kpi}><span>Agustus ke September</span><strong className={styles.kpiBig}>{sepChange < 0 ? "−" : "+"}{one(Math.abs(sepChange))}%</strong><small>Pembanding bulan terakhir, bukan April (bulan terendah)</small></div>
         <div className={styles.kpi}><span>Pelanggan</span><AnimatedCounter value={A.customers} locale="id-ID" /><small>{A.pareto.pelanggan80} pelanggan menghasilkan 80% omzet</small></div>
       </section>
       <p className={styles.kpiWhy}><b>Revisi 0 · kenapa diubah:</b> lencana "+22,6%" di versi 1 membandingkan September dengan April, bulan terendah, sehingga kenaikan tampak besar padahal September turun dari Agustus. Versi 1 juga menulis 6.720 transaksi di KPI dan 6.778 di footer tanpa penjelasan. Angka yang tidak konsisten membuat audiens meragukan angka lain.</p>

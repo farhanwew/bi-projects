@@ -38,9 +38,11 @@
 }
 
 /* Interaksi: baris keterangan di atas grafik, bar lain meredup, area sentuh transparan */
-.figure { margin: 0; }
-.readout { margin: 0 0 8px; min-height: 1.4em; color: var(--text-muted); font-size: var(--text-sm); }
-.readoutOn { color: var(--foreground); }
+.figure { position: relative; margin: 0; }
+/* Keterangan mengambang di atas grafik, hanya saat ada yang dipilih (tidak memakan tempat saat diam) */
+.readout { position: absolute; top: -8px; left: 0; right: 0; z-index: 2; margin: 0; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow-resting); color: var(--foreground); font-size: var(--text-sm); pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard); }
+.readout:empty { display: block; }
+.readoutOn { opacity: 1; transform: none; }
 .dim { opacity: 0.35; transition: opacity var(--duration-fast) var(--ease-standard); }
 .hrow, .hit { cursor: default; }
 .hrow { border-radius: 6px; outline: none; transition: opacity var(--duration-fast) var(--ease-standard); }

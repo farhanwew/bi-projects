@@ -70,7 +70,7 @@ function MonthlyChart({ s }: { s: ReturnType<typeof useStory> }) {
   const cur = s.months.find(m => m.m === active);
   return (
     <figure className={chart.figure}>
-    <p className={`${chart.readout} ${cur ? chart.readoutOn : ""}`} aria-live="polite">{cur ? detail(cur) : "Arahkan kursor, sentuh, atau Tab ke bar untuk detail."}</p>
+    <p className={`${chart.readout} ${cur ? chart.readoutOn : ""}`} aria-live="polite">{cur ? detail(cur) : ""}</p>
     <svg viewBox={`0 0 ${W} ${H}`} role="group" className={styles.chart}
       aria-label={`Omzet per bulan dalam juta rupiah. Agustus ${int(s.aug.base + s.aug.jumbo)}, terdiri dari ${int(s.aug.base)} tanpa pesanan jumbo dan ${int(s.aug.jumbo)} dari pesanan jumbo.`}>
       <line x1={cx(julIdx) + bw / 2} x2={W - 8} y1={y(s.jul.base)} y2={y(s.jul.base)} className={styles.ref} />
