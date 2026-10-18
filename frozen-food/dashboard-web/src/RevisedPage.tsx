@@ -237,7 +237,7 @@ export function RevisedPage() {
           <p className={styles.bigNote}>Per hari, akhir bulan <b>{pct((phase[2].perDay / phase[0].perDay - 1) * 100)} lebih tinggi</b> daripada awal bulan, dan {pct((phase[2].perDay / phase[1].perDay - 1) * 100)} lebih tinggi daripada pertengahan bulan.</p>
         </Card>
 
-        <Card n={12} before="bar vertikal 'Konsentrasi single buyer' tanpa garis acuan"
+        <Card n={12} wide before="bar vertikal 'Konsentrasi single buyer' tanpa garis acuan"
           title={`${bergantung50.length} dari 10 produk terbesar lebih dari separuh penjualannya dari satu pembeli`}
           sub="Persen penjualan produk yang dibeli oleh pembeli terbesarnya. Garis putus-putus = 50%."
           why="nama produk terpotong dan ambang 50%, inti pesannya, tidak digambar. Bar horizontal dengan garis acuan dan sorotan hanya pada produk di atas ambang membuat risikonya langsung terlihat.">
@@ -247,7 +247,7 @@ export function RevisedPage() {
           }))} />
         </Card>
 
-        <Card n={13} before="bar 'Keragaman produk per pelanggan' satu warna"
+        <Card n={13} wide before="bar 'Keragaman produk per pelanggan' satu warna"
           title={`Pelanggan yang membeli lebih dari 20 jenis produk belanja ${one(ragamTop.medianJt / ragamPrev.medianJt)} kali kelompok berikutnya`}
           sub="Median total belanja per pelanggan, juta rupiah, menurut banyaknya jenis produk yang dibeli."
           why="satu warna tidak menunjuk temuannya. Kata 'terkait' dipakai, bukan 'menyebabkan': pembeli besar memang wajar membeli banyak jenis, jadi data ini belum membuktikan bahwa menawarkan lebih banyak jenis akan menaikkan belanja.">
