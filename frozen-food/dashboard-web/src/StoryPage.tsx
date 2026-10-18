@@ -114,7 +114,13 @@ export function StoryPage() {
   return (
     <main className={styles.page}>
       <header className={styles.head}>
-        <p className={styles.eyebrow}>Untuk pemilik distributor · penjualan frozen food, April sampai September 2020</p>
+        {/* Konteks (Knaflic bab 1: siapa, apa, bagaimana). Satu audiens dulu: pemilik. */}
+        <dl className={styles.context} aria-label="Audiens dan tujuan">
+          <div><dt>Untuk</dt><dd><b>Pemilik distributor</b>, yang menentukan target penjualan bulanan</dd></div>
+          <div><dt>Tujuan</dt><dd>Menunjukkan bahwa rekor Agustus tidak bisa dijadikan patokan</dd></div>
+          <div><dt>Keputusan yang diminta</dt><dd>Setujui target berbasis omzet tanpa pesanan jumbo: <b>Rp{int(Math.min(...baseSince))} sampai {int(Math.max(...baseSince))} jt per bulan</b></dd></div>
+        </dl>
+        <p className={styles.eyebrow}>Penjualan frozen food, April sampai September 2020</p>
         <h1 className={styles.title}>Rekor omzet Agustus datang dari {s.jumboRows} pesanan jumbo; tanpa itu, omzet turun {one(drop)}% dari Juli</h1>
         <p className={styles.subtitle}>Usulan: patok target bulanan pada omzet tanpa pesanan jumbo, dan jaga pelanggan reguler agar tidak bergantung pada pesanan sekali besar.</p>
       </header>

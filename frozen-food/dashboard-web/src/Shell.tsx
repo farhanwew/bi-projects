@@ -20,16 +20,20 @@ const GROUPS: { title: string; routes: Route[] }[] = [
   },
 ];
 const ROUTES = GROUPS.flatMap(g => g.routes);
-const routeOf = (hash: string) => ROUTES.find(r => hash.replace(/^#\/?/, "") === r.id) ?? ROUTES[0];
+const routeOf = (hash: string) => ROUTES.find(r => hash.replace(/^#\/?/, "").split("?")[0] === r.id) ?? ROUTES[0];
+/** `#/cerita?polos` menyembunyikan sidebar, untuk ekspor gambar ke slide. */
+const plainOf = (hash: string) => hash.split("?")[1] === "polos";
 
 export function Shell() {
   const [route, setRoute] = useState(() => routeOf(window.location.hash));
+  const [plain, setPlain] = useState(() => plainOf(window.location.hash));
   useEffect(() => {
-    const onHash = () => { setRoute(routeOf(window.location.hash)); window.scrollTo(0, 0); };
+    const onHash = () => { setRoute(routeOf(window.location.hash)); setPlain(plainOf(window.location.hash)); window.scrollTo(0, 0); };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
   const Page = route.page;
+  if (plain) return <Page />;
   return (
     <div className={styles.shell}>
       <nav className={styles.side} aria-label="Halaman">
