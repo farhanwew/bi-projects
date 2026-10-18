@@ -64,27 +64,28 @@
 .panel { position: absolute; top: 0; left: 0; width: max-content; padding: 10px; --cell: 36px; }
 .body { display: flex; gap: 10px; }
 
-.rail { position: relative; display: flex; width: 9.25rem; flex: none; flex-direction: column; gap: 2px; padding-right: 10px; border-right: 1px solid var(--border-subtle); }
-.railHighlight { position: absolute; top: 0; left: 0; border-radius: 12px; background: color-mix(in oklab, var(--foreground) 6.5%, transparent); pointer-events: none; }
+.rail { position: relative; display: flex; width: 11.5rem; flex: none; flex-direction: column; gap: 3px; padding-right: 12px; border-right: 1px solid var(--border-subtle); }
+.railHighlight { position: absolute; top: 0; left: 0; border-radius: 10px; background: color-mix(in oklab, var(--foreground) 6.5%, transparent); pointer-events: none; }
 .preset {
   position: relative;
   display: flex;
   height: 32px;
   flex: none;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 10px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   font: inherit;
+  font-size: var(--text-xs);
   text-align: left;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
   transition: color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
 }
-.preset[aria-pressed="true"] { color: var(--foreground); font-weight: 500; }
+.preset[aria-pressed="true"] { color: var(--foreground); font-weight: 600; }
 
 .calendars { position: relative; padding: 0 2px; }
 .navButton {

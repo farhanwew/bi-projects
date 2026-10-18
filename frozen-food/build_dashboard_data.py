@@ -87,9 +87,14 @@ assert total == 4_530_330_620 and len(d) == 6720 and len(cust) == 181 and ref['b
 assert ref['month'][8] == 883_314_940 and ref['top10Pct'] == 53.0 and ref['produk80'] == 40 and ref['top3Agu'] == 172_150_000
 assert round(pr.iloc[0] / total * 100, 1) == 21.4 and ref['salesAkun'] == 136
 
+rank = {name: i + 1 for i, name in enumerate(cu.index)}
+pelanggan_real = [title(c) for c in cust]
+pelanggan_anon = [f'Pelanggan {rank[c]:03d}' for c in cust]
+
 data = dict(
     base='2020-04-01', hari=int(d['Day'].max()),
-    pelanggan=[title(c) for c in cust], produk=[title(x) for x in prod], merek=merek, satuan=[s.lower() for s in satuan],
+    pelanggan=pelanggan_real,
+    produk=[title(x) for x in prod], merek=merek, satuan=[s.lower() for s in satuan],
     rows=rows,
     kualitas=dict(barisRp0=int((df['Jumlah'] <= 0).sum()), duplikat=int(df.duplicated(['File', 'Tgl', 'Kode', 'Qty', 'Harga', 'Jumlah', 'Nama']).sum()),
                   selisihHarga=int((abs(d['Qty'] * d['Harga'] - d['Jumlah']) > 1000).sum()), barisTotal=len(df)),
@@ -99,8 +104,7 @@ dump = lambda path, obj: path.write_text(json.dumps(obj, ensure_ascii=False, sep
 OUT.parent.mkdir(parents=True, exist_ok=True)
 dump(OUT, data)
 
-# Varian publik (dikomit ke repo, dipakai CI): nama pelanggan diganti peringkat omzetnya. Angka, tanggal, dan produk tetap.
-rank = {name: i + 1 for i, name in enumerate(cu.index)}
 PUBLIK = OUT.with_name('data.publik.json')
-dump(PUBLIK, {**data, 'pelanggan': [f'Pelanggan {rank[c]:03d}' for c in cust]})
+# Varian publik (dikomit ke repo, dipakai CI): nama pelanggan diganti peringkat omzetnya. Angka, tanggal, dan produk tetap.
+dump(PUBLIK, {**data, 'pelanggan': pelanggan_anon})
 print(f'ok: {OUT} ({OUT.stat().st_size / 1024:.0f} KB, {len(rows)} baris) dan {PUBLIK.name}')

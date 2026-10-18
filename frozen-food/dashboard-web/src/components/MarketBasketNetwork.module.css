@@ -1,0 +1,479 @@
+.container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-surface);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.03);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.badgeDiag {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in oklab, var(--warning) 20%, transparent);
+  color: var(--warning);
+}
+
+.filterPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: var(--surface-muted);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+}
+
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.filterBtn:hover {
+  color: var(--foreground);
+}
+
+.filterBtnActive {
+  background: var(--surface);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.iconFlame {
+  color: var(--warning);
+}
+
+/* KPI Highlights */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.kpiBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface-muted);
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--border-subtle);
+}
+
+.kpiLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+}
+
+.kpiVal {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.colorSuccess {
+  color: var(--success);
+}
+
+.kpiSub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Graph Canvas */
+.graphWrapper {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-panel);
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  min-height: 480px;
+}
+
+.svgCanvas {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  display: block;
+  cursor: default;
+}
+
+.linkGroup {
+  cursor: pointer;
+}
+
+.linkLine {
+  transition: stroke-width 0.2s, stroke-opacity 0.2s;
+}
+
+.linkGroup:hover .linkLine {
+  stroke-opacity: 1 !important;
+  stroke-width: 6px !important;
+}
+
+.nodeGroup {
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.nodeCircle {
+  transition: transform 0.2s;
+}
+
+.nodeGroup:hover .nodeCircle {
+  transform: scale(1.1);
+}
+
+.nodeLabel {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--foreground);
+  font-family: var(--font-sans);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Floating BI Insight Card */
+.insightFloatingCard {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 320px;
+  max-width: calc(100% - 32px);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-surface);
+  padding: 16px;
+  box-shadow: var(--shadow-floating);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cardHeaderSmall {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardThumbSmall {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-control);
+  object-fit: cover;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.cardIconSmall {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--accent) 15%, transparent);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cardTagSmall {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+}
+
+.cardTitleSmall {
+  font-size: 12px;
+  color: var(--foreground);
+  display: block;
+  line-height: 1.3;
+}
+
+.metricGridSmall {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background: var(--surface-muted);
+  padding: 10px;
+  border-radius: var(--radius-panel);
+}
+
+.metricMini {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+}
+
+.metricMini span {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.metricMini strong {
+  font-size: 13px;
+  color: var(--foreground);
+}
+
+.confidenceBarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  padding: 4px 0;
+}
+
+.confRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-secondary);
+}
+
+.biTakeaway {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+}
+
+.biTakeaway strong {
+  color: var(--foreground);
+}
+
+/* Legend Bar */
+.legendBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface-muted);
+  border-radius: var(--radius-panel);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.legendGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.legendTitle {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.legendPill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dotHigh { width: 10px; height: 10px; border-radius: var(--radius-pill); background: #10b981; }
+.dotMed { width: 10px; height: 10px; border-radius: var(--radius-pill); background: #3b82f6; }
+.dotLow { width: 10px; height: 10px; border-radius: var(--radius-pill); background: #94a3b8; }
+
+.brandLegend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.brandDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+}
+
+.toggleTableBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.toggleTableBtn:hover {
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+}
+
+/* Table Area */
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-xs);
+  text-align: left;
+}
+
+.table th {
+  background: var(--surface-muted);
+  padding: 10px 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--foreground);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.table tr:hover td {
+  background: color-mix(in oklab, var(--accent) 6%, transparent);
+}
+
+.rowSelected td {
+  background: color-mix(in oklab, var(--accent) 12%, transparent) !important;
+}
+
+.badgeHighLift {
+  display: inline-flex;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--success) 15%, transparent);
+  color: var(--success);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.badgeNormalLift {
+  display: inline-flex;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.tagCross {
+  display: inline-flex;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--accent) 15%, transparent);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tagSame {
+  display: inline-flex;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.actionRec {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.actionNormal {
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .kpiRow {
+    grid-template-columns: 1fr;
+  }
+  .filterPills {
+    width: 100%;
+  }
+}

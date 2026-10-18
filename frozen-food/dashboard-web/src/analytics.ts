@@ -12,7 +12,7 @@ export interface Dict {
   merek: string[];
   satuan: string[];
 }
-export interface Filter { from: number; to: number; months: number[] }
+export interface Filter { from: number; to: number; months: number[]; excludeOutliers?: boolean }
 
 export const BULAN: Record<number, string> = { 4: "April", 5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus", 9: "September" };
 export const HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -35,7 +35,12 @@ export function calendar(base: string, hari: number): Calendar {
 
 export function filterRows(rows: readonly Row[], f: Filter, cal: Calendar): Row[] {
   const months = new Set(f.months);
-  return rows.filter(r => r[DAY] >= f.from && r[DAY] <= f.to && (months.size === 0 || months.has(cal.month[r[DAY]])));
+  return rows.filter(r => {
+    if (r[DAY] < f.from || r[DAY] > f.to) return false;
+    if (months.size > 0 && !months.has(cal.month[r[DAY]])) return false;
+    if (f.excludeOutliers && r[AMT] >= 40_000_000) return false;
+    return true;
+  });
 }
 
 const median = (a: number[]) => {
