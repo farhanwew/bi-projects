@@ -18,3 +18,4 @@ frozen-food/dashboard.pdf
 node_modules/
 dist/
 __pycache__/
+.DS_Store

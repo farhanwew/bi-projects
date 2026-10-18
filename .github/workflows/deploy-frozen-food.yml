@@ -3,7 +3,7 @@ name: Deploy dashboard frozen food
 on:
   push:
     branches: [main]
-    paths: ["frozen-food/dashboard-web/**", ".github/workflows/deploy-frozen-food.yml"]
+    paths: ["index.html", "frozen-food/dashboard-web/**", ".github/workflows/deploy-frozen-food.yml"]
   workflow_dispatch:
 
 permissions:
@@ -32,6 +32,12 @@ jobs:
       # data.json (nama asli) tidak ada di repo; build memakai varian dengan nama pelanggan disamarkan
       - run: cp src/data.publik.json src/data.json
       - run: npm run build
+      - name: Deploy Single-Page Storytelling index.html as main page
+        run: |
+          mkdir -p dist/drilldown
+          cp -r dist/assets dist/drilldown/
+          cp dist/index.html dist/drilldown/index.html
+          cp ../../index.html dist/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
