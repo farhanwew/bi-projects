@@ -146,7 +146,7 @@ export function StoryPage() {
 
       <footer className={styles.foot}>
         Sumber: {int(ROWS.length)} transaksi berbayar, April sampai September 2020. Pesanan jumbo = satu baris bernilai minimal Rp40 jt. Data tidak menjelaskan alasan pembeli memesan sebesar itu.
-        <a href="./" className={styles.back}>Versi 1: dashboard umum</a>
+        <a href="#/sebelum" className={styles.back}>Versi 1: dashboard umum</a>
       </footer>
     </main>
   );
