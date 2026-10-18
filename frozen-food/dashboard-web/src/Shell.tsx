@@ -38,6 +38,9 @@ export function Shell() {
     <div className={styles.shell}>
       <nav className={styles.side} aria-label="Halaman">
         <p className={styles.brand}>Penjualan frozen food 2020</p>
+        {window.location.pathname.includes("/drilldown") && (
+          <a href="../" className={styles.link}>← Laporan eksekutif<small>Ringkasan untuk manajemen</small></a>
+        )}
         {GROUPS.map(g => (
           <div key={g.title} className={styles.group}>
             <p className={styles.groupTitle}>{g.title}</p>

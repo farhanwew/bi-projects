@@ -156,7 +156,7 @@ export function RevisedSections({ notes }: { notes: boolean }) {
         </Card>
 
         <Card n={4} before="bar 'Pelanggan yang berbelanja per bulan' tanpa konteks"
-          title={`Agustus punya pelanggan terbanyak (${aug.pelanggan}), tetapi ${kohortAug.nBaru} di antaranya pelanggan baru`}
+          title={`Pelanggan aktif tertinggi di Agustus (${aug.pelanggan}, naik dari ${jul.pelanggan} di Juli)`}
           sub="Jumlah pelanggan per bulan; bagian biru = pelanggan yang pertama kali belanja bulan itu. April tidak ditampilkan karena bulan pertama data."
           why="angka 111 tanpa keterangan tampak seperti bukti pasar meluas dan berlawanan dengan cerita bahwa rekor Agustus semu. Memisahkan pelanggan baru menjelaskan angka itu daripada menyembunyikannya.">
           <VBars label="Pelanggan lama dan baru per bulan" height={210} items={A.months.filter(m => m.month !== 4).map(m => {
@@ -209,8 +209,8 @@ export function RevisedSections({ notes }: { notes: boolean }) {
         </Card>
 
         <Card n={9} wide before="garis harian 183 hari yang jatuh ke nol setiap Minggu"
-          title={`Hari biasa sekitar ${rp(medianDay)}; tiga hari tertinggi ${peaks.map(p => dateFmt.format(p.date)).join(", ")}`}
-          sub="Omzet harian (juta rupiah), hanya hari toko buka. Geser jendela di bawah untuk memperbesar; titik penanda menjelaskan puncaknya."
+          title={`Omzet harian punya tiga puncak: ${peaks.map(p => dateFmt.format(p.date)).join(", ")}`}
+          sub={`Omzet harian (juta rupiah), hanya hari toko buka; hari biasa sekitar ${rp(medianDay)}. Geser jendela di bawah untuk memperbesar; titik penanda menjelaskan puncaknya.`}
           why="Minggu dan hari libur bernilai nol sehingga garisnya bergerigi dan menenggelamkan pola, dan puncak tidak diberi keterangan. Versi ini hanya memakai hari buka dan memberi anotasi di puncak (komponen Arc brush chart).">
           <BrushChart label="Omzet harian" unit="jt" data={daily.map(d => ({ date: d.date, value: d.value }))}
             formatValue={v => one(v)} formatTick={v => int(v)} formatDate={d => longDate.format(d)} height={220}
@@ -219,7 +219,7 @@ export function RevisedSections({ notes }: { notes: boolean }) {
         </Card>
 
         <Card n={10} before="'Pola hari kerja' berupa jumlah omzet per hari"
-          title={`${WD_FULL[wMax.w]} hari omzet terbesar; transaksi ${WD_FULL[wVal.w]} paling kecil nilainya`}
+          title={`${WD_FULL[wMax.w]} hari omzet terbesar, ${WD_FULL[wMin.w]} terendah`}
           sub="Rata-rata omzet per hari buka, juta rupiah. Minggu tutup."
           why={`versi 1 menjumlahkan omzet, padahal banyaknya hari buka tiap hari berbeda karena libur, sehingga perbandingannya tidak adil. Rata-rata per hari buka lebih jujur. ${WD_FULL[wMin.w]} omzetnya terendah, dan satu transaksi di hari ${WD_FULL[wVal.w]} rata-rata hanya Rp${int(perTxDay(wVal) * 1000)} rb, dibanding Rp${int(perTxDay(wMax) * 1000)} rb di hari ${WD_FULL[wMax.w]}.`}>
           <VBars label="Rata-rata omzet per hari buka" height={200} items={week.map(x => ({ key: `w${x.w}`, label: WD[x.w], value: x.avg, text: one(x.avg), hi: x.w === wMax.w,
