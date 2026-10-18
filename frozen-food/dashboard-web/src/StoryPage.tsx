@@ -3,6 +3,8 @@ import { BULAN, calendar, type Dict, type Row } from "./analytics";
 import raw from "./data.json";
 import { int, one, pct, rp } from "./format";
 import { HBars } from "./components/charts/charts";
+import SegmentedControl from "@/components/arc/segmented-control/segmented-control";
+import { RevisedSections } from "./RevisedPage";
 import chart from "./components/charts/charts.module.css";
 import styles from "./StoryPage.module.css";
 
@@ -100,6 +102,7 @@ function MonthlyChart({ s }: { s: ReturnType<typeof useStory> }) {
 
 export function StoryPage() {
   const s = useStory();
+  const [notes, setNotes] = useState(() => window.location.hash.includes("catatan"));
   const total = s.aug.base + s.aug.jumbo;
   const drop = (1 - s.aug.base / s.jul.base) * 100;
   const sep = s.months.find(x => x.m === 9)!;
@@ -155,6 +158,18 @@ export function StoryPage() {
           </ol>
         </section>
       </div>
+
+      <section className={styles.detail} aria-labelledby="detail-title">
+        <div className={styles.detailHead}>
+          <div>
+            <h2 id="detail-title" className={styles.detailTitle}>Detail pendukung</h2>
+            <p className={styles.detailSub}>Grafik lain dari data yang sama, sudah diperbaiki mengikuti storytelling with data.</p>
+          </div>
+          <SegmentedControl label="Catatan revisi" options={[{ value: "off", label: "Tanpa catatan revisi" }, { value: "on", label: "Dengan catatan revisi" }]}
+            value={notes ? "on" : "off"} onValueChange={v => setNotes(v === "on")} />
+        </div>
+        <RevisedSections notes={notes} />
+      </section>
 
       <footer className={styles.foot}>
         Sumber: {int(ROWS.length)} transaksi berbayar, April sampai September 2020. Pesanan jumbo = satu baris bernilai minimal Rp40 jt. Data tidak menjelaskan alasan pembeli memesan sebesar itu.

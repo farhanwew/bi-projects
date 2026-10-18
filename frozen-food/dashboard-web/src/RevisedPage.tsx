@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { AnimatedCounter } from "@/components/arc/animated-counter/animated-counter";
 import { BrushChart } from "@/components/arc/brush-chart/brush-chart";
 import { SlopeChart } from "@/components/arc/slope-chart/slope-chart";
@@ -9,7 +9,7 @@ import { int, one, pct, rp } from "./format";
 import styles from "./RevisedPage.module.css";
 
 /**
- * Versi 2, halaman "grafik yang direvisi": tiap grafik versi 1 dibuat ulang mengikuti Knaflic (judul berupa kesimpulan,
+ * Versi 2, bagian "detail pendukung" di bawah cerita: tiap grafik versi 1 dibuat ulang mengikuti Knaflic (judul berupa kesimpulan,
  * satu sorotan, label langsung, tanpa gridline). Tiap kartu menyebut bentuk sebelumnya dan alasan perubahannya.
  * Seluruh periode, tanpa filter: halaman ini untuk presentasi. Semua angka dihitung dari data.
  */
@@ -82,29 +82,30 @@ const ragamTop = A.ragam[A.ragam.length - 1], ragamPrev = A.ragam[A.ragam.length
 const pairs = A.pasangan.top.slice(0, 6);
 const pairHi = pairs.filter(p => p.bedaMerek).reduce((a, b) => (b.lift > a.lift ? b : a));
 
+/** Catatan "sebelumnya" dan "kenapa diubah" untuk dosen; disembunyikan saat dashboard dibaca sebagai laporan untuk pemilik. */
+const NotesContext = createContext(false);
+
 function Card({ n, before, title, sub, why, wide, center, children }: { n: number; before: string; title: string; sub: string; why: ReactNode; wide?: boolean; center?: boolean; children: ReactNode }) {
+  const notes = useContext(NotesContext);
   return (
     <section className={`${styles.card} ${wide ? styles.wide : ""}`} aria-labelledby={`r${n}`}>
-      <p className={styles.before}>Revisi {n} · sebelumnya: {before}</p>
+      {notes && <p className={styles.before}>Revisi {n} · sebelumnya: {before}</p>}
       <h2 id={`r${n}`} className={styles.title}>{title}</h2>
       <p className={styles.sub}>{sub}</p>
       <div className={`${styles.chart} ${center ? styles.center : ""}`}>{children}</div>
-      <p className={styles.why}><b>Kenapa diubah:</b> {why}</p>
+      {notes && <p className={styles.why}><b>Kenapa diubah:</b> {why}</p>}
     </section>
   );
 }
 
-export function RevisedPage() {
+export function RevisedSections({ notes }: { notes: boolean }) {
   const total = A.totalJt;
   const sepChange = (sep.omzetJt / aug.omzetJt - 1) * 100;
   const txDrop = (aug.baris / jul.baris - 1) * 100;
   const perTx = (m: typeof jul) => (m.omzetJt * 1e3) / m.baris;
   return (
-    <main className={styles.page}>
-      <header className={styles.head}>
-        <h1 className={styles.h1}>Lampiran: perbaikan tiap grafik</h1>
-        <p className={styles.lead}>Setiap grafik di dashboard versi 1 dibuat ulang mengikuti prinsip storytelling with data: judul berupa kesimpulan, satu warna sorot, label langsung, dan tanpa gridline atau legenda. Di tiap kartu tertulis bentuk sebelumnya dan alasan perubahannya. Periode April sampai September 2020, {int(A.n)} transaksi berbayar.</p>
-      </header>
+    <NotesContext.Provider value={notes}>
+    <div className={styles.body}>
 
       <section className={styles.kpis} aria-label="Angka utama">
         <div className={styles.kpi}><span>Total omzet</span><AnimatedCounter value={total / 1000} decimals={2} suffix={" miliar"} locale="id-ID" /><small>{int(A.n)} transaksi berbayar; 58 baris Rp0 (sampel, bonus) tidak dihitung</small></div>
@@ -112,7 +113,7 @@ export function RevisedPage() {
         <div className={styles.kpi}><span>Agustus ke September</span><strong className={styles.kpiBig}>{sepChange < 0 ? "−" : "+"}{one(Math.abs(sepChange))}%</strong><small>Pembanding bulan terakhir, bukan April (bulan terendah)</small></div>
         <div className={styles.kpi}><span>Pelanggan</span><AnimatedCounter value={A.customers} locale="id-ID" /><small>{A.pareto.pelanggan80} pelanggan menghasilkan 80% omzet</small></div>
       </section>
-      <p className={styles.kpiWhy}><b>Revisi 0 · kenapa diubah:</b> lencana "+22,6%" di versi 1 membandingkan September dengan April, bulan terendah, sehingga kenaikan tampak besar padahal September turun dari Agustus. Versi 1 juga menulis 6.720 transaksi di KPI dan 6.778 di footer tanpa penjelasan. Angka yang tidak konsisten membuat audiens meragukan angka lain.</p>
+      {notes && <p className={styles.kpiWhy}><b>Revisi 0 · kenapa diubah:</b> lencana "+22,6%" di versi 1 membandingkan September dengan April, bulan terendah, sehingga kenaikan tampak besar padahal September turun dari Agustus. Versi 1 juga menulis 6.720 transaksi di KPI dan 6.778 di footer tanpa penjelasan. Angka yang tidak konsisten membuat audiens meragukan angka lain.</p>}
 
       <div className={styles.grid}>
         <Card n={1} wide before="tabel 7 kolom 'Mengapa penjualan melonjak di Agustus?'"
@@ -269,6 +270,7 @@ export function RevisedPage() {
           }))} />
         </Card>
       </div>
-    </main>
+    </div>
+    </NotesContext.Provider>
   );
 }
