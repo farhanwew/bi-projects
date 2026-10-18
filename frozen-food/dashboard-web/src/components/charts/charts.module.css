@@ -1,0 +1,54 @@
+/* Grafik kecil untuk versi 2: satu warna sorot (--series-1), sisanya abu-abu, label langsung, tanpa gridline dan legenda. */
+
+/* Bar horizontal */
+/* Kolom dibagi di tingkat daftar (subgrid), jadi awal bar dan kolom nilai sejajar di semua baris
+   walaupun panjang nama dan teks nilainya berbeda. */
+.hbars { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) max-content; gap: 10px 12px; }
+.hrow { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; align-items: center; font-size: var(--text-sm); }
+.hname { display: grid; gap: 1px; min-width: 0; overflow-wrap: anywhere; color: var(--text-secondary); }
+.hnameHi { color: var(--foreground); font-weight: 600; }
+.hnote { color: var(--text-muted); font-size: var(--text-xs); font-weight: 400; }
+.htrack { position: relative; height: 14px; }
+.hfill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--neutral-5); min-width: 2px; }
+.hfillHi { background: var(--series-1); }
+.href { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1.5px dashed var(--neutral-8); }
+.hvalue { font-variant-numeric: tabular-nums; color: var(--text-secondary); white-space: nowrap; }
+.hvalueHi { color: var(--foreground); font-weight: 600; }
+.hcaption { margin: 8px 0 0; color: var(--text-muted); font-size: var(--text-xs); }
+
+/* SVG bersama */
+.svg { display: block; width: 100%; height: auto; overflow: visible; }
+.bar { fill: var(--neutral-5); }
+.barDark { fill: var(--neutral-6); }
+.barHi { fill: var(--series-1); }
+.barSoft { fill: color-mix(in oklab, var(--series-1) 30%, var(--surface)); }
+.lbl { fill: var(--text-secondary); font-size: 13px; font-variant-numeric: tabular-nums; }
+.lblHi { fill: var(--foreground); font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.inBarSoft { fill: var(--neutral-9); font-size: 12px; font-variant-numeric: tabular-nums; }
+.inBar { fill: #fff; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.axis { fill: var(--text-secondary); font-size: 12px; }
+.connector { stroke: var(--neutral-6); stroke-width: 1; stroke-dasharray: 3 3; }
+.line { fill: none; stroke: var(--neutral-6); stroke-width: 2; }
+.dot { fill: var(--neutral-6); }
+.dotHi { fill: var(--series-1); }
+.zig { fill: none; stroke: var(--neutral-7); stroke-width: 1.5; }
+.baseLine { stroke: var(--neutral-5); stroke-width: 1; }
+
+@media (max-width: 640px) {
+  .hbars { grid-template-columns: minmax(0, 1fr) max-content; }
+  .htrack { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* Interaksi: baris keterangan di atas grafik, bar lain meredup, area sentuh transparan */
+.figure { position: relative; margin: 0; }
+/* Keterangan mengambang di atas grafik, hanya saat ada yang dipilih (tidak memakan tempat saat diam) */
+.readout { position: absolute; top: -8px; left: 0; right: 0; z-index: 2; margin: 0; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow-resting); color: var(--foreground); font-size: var(--text-sm); pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard); }
+.readout:empty { display: block; }
+.readoutOn { opacity: 1; transform: none; }
+.dim { opacity: 0.35; transition: opacity var(--duration-fast) var(--ease-standard); }
+.hrow, .hit { cursor: default; }
+.hrow { border-radius: 6px; outline: none; transition: opacity var(--duration-fast) var(--ease-standard); }
+.hrow:focus-visible { box-shadow: 0 0 0 2px var(--series-1); }
+.hit { fill: transparent; outline: none; }
+.hit:focus-visible { stroke: var(--series-1); stroke-width: 2; }
+.cross { stroke: var(--neutral-6); stroke-width: 1; stroke-dasharray: 3 3; }
