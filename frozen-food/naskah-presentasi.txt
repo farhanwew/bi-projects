@@ -1,0 +1,105 @@
+NASKAH PRESENTASI DASHBOARD PENJUALAN FROZEN FOOD (± 6 MENIT)
+Data: penjualan April–September 2020 | 6.720 transaksi | 181 pelanggan | 297 produk | total Rp 4,53 miliar
+Tanda [ ] = apa yang dilakukan di layar. Angka sudah dicek ke data (frozen-food/check_laporan.py).
+
+============================================================
+0. PEMBUKA (± 40 detik) [layar: dashboard Versi 1]
+============================================================
+"Ini dashboard Versi 1. Isinya lengkap: omzet, transaksi, pelanggan, produk, pola hari. Tapi kalau saya tanya
+'jadi apa yang harus dilakukan?', dashboard ini tidak menjawab. Tidak ada audiens, tidak ada pesan utama.
+
+Di Versi 2 saya memakai prinsip storytelling with data: satu audiens, satu pesan, judul berupa kesimpulan,
+satu warna sorotan, dan setiap klaim dicek ke data. Saya mulai dari pesan intinya."
+
+PESAN INTI (ulangi di akhir):
+"Omzet bergantung pada sedikit pelanggan dan sedikit produk. Agustus memang tertinggi, tetapi 19,5% omzetnya
+datang dari tiga pesanan besar saja."
+
+============================================================
+1. RINGKASAN [layar: bagian atas halaman, Dashboard sekarang]
+============================================================
+"Omzet Agustus Rp 883 juta, tertinggi dalam enam bulan. Tapi Rp 172 juta atau 19,5% datang dari tiga pesanan
+besar milik dua pembeli. Di bulan lain, tiga pesanan terbesarnya hanya 6 sampai 13% omzet.
+
+Dua temuan lain: sepuluh pelanggan terbesar menghasilkan 53% omzet, dan 40 dari 297 produk menghasilkan 80%."
+
+============================================================
+2. BAGIAN 1 - OMZET PER BULAN (Marketing Director & Finance) (± 1 menit)
+============================================================
+[klik: 1. Omzet per bulan]
+"Omzet naik dari Rp 610 juta di April ke Rp 811 juta di Juli, naik 33%. Agustus rekor Rp 883 juta, lalu
+September turun 15% ke Rp 747 juta.
+
+Satu catatan jujur: beberapa hari yang menonjol menentukan 13 sampai 37% omzet sebulan. Jadi selisih antarbulan
+perlu dibaca hati-hati, jangan terlalu cepat menyimpulkan tren.
+
+Kebiasaan belanja pelanggan: rata-rata 2,6 hari belanja per bulan, dan 82% pelanggan belanja lebih dari satu hari."
+
+Usulan: pantau omzet bulanan tanpa pesanan besar, dan tanyakan apakah dua pembeli besar di Agustus akan memesan lagi.
+
+============================================================
+3. BAGIAN 2 - PELANGGAN (Head of Marketing / CRM) (± 2 menit)
+============================================================
+[klik: 2. Pelanggan]
+Grafik 2.1 - sepuluh pelanggan terbesar:
+"Sepuluh pelanggan terbesar menghasilkan 53% omzet, sekitar Rp 2,4 miliar. Pelanggan terbesar sendiri 12,1%,
+Rp 548 juta. Sebanyak 37 dari 181 pelanggan sudah menghasilkan 80% omzet. Artinya hubungan dengan
+pelanggan besar sangat menentukan."
+
+Grafik 2.2 - pelanggan baru dan lama:
+"Dari 100 pelanggan lama, 74 belanja lagi bulan berikutnya. Pada pelanggan baru, hanya 53 dari 100.
+Per bulan, rata-rata 3 dari 10 pelanggan belum belanja lagi (23 sampai 37% tergantung bulan).
+
+Tapi 'belum belanja lagi' belum tentu hilang: dari pelanggan yang absen sebulan, 31 sampai 58% belanja lagi dua
+bulan kemudian. Pelanggan baru hanya 4 sampai 13% omzet bulanan, jadi omzet sekarang masih ditopang pelanggan lama."
+
+Usulan: jaga hubungan dengan sepuluh pelanggan terbesar, ingatkan yang sudah lama tidak belanja, dan ajak pelanggan
+baru belanja lagi dalam 30 hari pertama.
+
+============================================================
+4. BAGIAN 3 - PRODUK (Head of Sales & Product) (± 1,5 menit)
+============================================================
+[klik: 3. Produk]
+Grafik 3.1 - kurva 80%:
+"40 dari 297 produk, atau 13,5%, menghasilkan 80% omzet, sekitar Rp 3,63 miliar. Sebaliknya 229 produk masing-masing
+kurang dari 0,2% omzet."
+
+Grafik 3.2 dan 3.3:
+"Produk terbesar, Minaku Otak-Otak, sendirian 21,4%. Tiga merek teratas, yaitu Minaku, Okey, dan Jofrans, menghasilkan
+50,7% omzet dari 71 merek."
+
+Grafik 3.4:
+"Produk yang paling sering dibeli bersamaan: Okey Sosis dan Okey Stick, 183 nota. Ini dasar untuk paket bundling."
+
+Usulan: tinjau produk yang jarang terjual (175 dari 297 produk terjual lima baris atau kurang di Juli-September,
+47 tidak terjual sama sekali), pastikan stok 40 produk unggulan aman, dan uji paket bundling.
+
+============================================================
+5. PENUTUP (± 40 detik)
+============================================================
+"Kesimpulannya: omzet bergantung pada sedikit pelanggan dan produk. Agustus tertinggi, tetapi hampir seperlimanya
+dari tiga pesanan besar. Yang paling mendesak: menjaga sepuluh pelanggan terbesar.
+
+Batas data: kami tidak punya biaya iklan, margin, stok, atau target penjualan, jadi efektivitas promo dan keuntungan
+belum bisa dinilai. Semua angka dihitung dari data penjualan dan dicek dengan skrip pengecek."
+
+============================================================
+CATATAN KALAU DITANYA
+============================================================
+- Kenapa tidak pakai istilah churn?
+  Tidak belanja di satu bulan belum tentu berhenti; separuh yang absen sebulan kembali dua bulan kemudian. Kami pakai
+  "belum belanja lagi".
+- Apa itu pelanggan baru?
+  Pertama kali belanja di bulan itu. Pelanggan April tidak dihitung baru karena data mulai April.
+- Kenapa Agustus tidak dikurangi saja pesanan besarnya?
+  Bulan lain juga punya hari dan pesanan besar. Hasilnya bergantung cara memangkas, jadi kami sebut fakta: 19,5%
+  omzet Agustus dari tiga pesanan, bulan lain 6 sampai 13%.
+- Apa bedanya transaksi dan pembelian?
+  Transaksi di data adalah satu baris produk (6.720). Satu pembelian = satu pelanggan di satu hari (tidak ada nomor nota).
+- Dari mana angka-angkanya?
+  Enam file Excel penjualan April-September 2020; 58 baris bernilai Rp 0 (sampel/bonus) tidak dihitung; dua toko yang
+  berganti nama digabung (181 pelanggan).
+- Kenapa ada nama pelanggan asli?
+  Sumber data memuatnya dan kami memakainya apa adanya (sama seperti dashboard Versi 1).
+- Kenapa tidak ada prediksi atau potensi tambahan omzet?
+  Data tidak memuat biaya atau margin, jadi angka seperti itu hanya tebakan.
