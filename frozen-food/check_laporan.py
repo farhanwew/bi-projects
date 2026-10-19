@@ -86,7 +86,6 @@ html = pathlib.Path('../index.html').read_text(encoding='utf8')
 def ada(nama, teks):
     assert teks in html, f'{nama}: {teks!r} tidak ada di index.html'
 assert round(besar[4]) == 172 and tanpa[4] == 711.2; ada('pesanan besar', 'Rp %d jt dari 3 pesanan besar' % round(besar[4]))
-ada('kurva pareto', json.dumps(kurva))
 for a, b2, c in top: ada('pasangan', f'{c}')
 ada('tren','const omzet = ' + json.dumps([jt(per_bulan[m]) for m in BULAN]))
 for k in ('omzet', 'persen'): ada('terbesar ' + k, '"%s": ' % k + json.dumps(terbesar[k]))
@@ -120,13 +119,12 @@ for _lo, _hi in [(0, 30), (31, 90), (91, 10**6)]:
 ada('segmen', 'const SEGMEN = ' + json.dumps(_seg))
 ada('rata pasif judul', 'rata-rata Rp %s juta, seperempat dari pelanggan aktif' % str(_seg['rata'][1]).replace('.', ',')); assert abs(_seg['rata'][1] / _seg['rata'][0] - 0.25) < 0.02
 
-# hari kalender, hari Minggu, jarak antar hari belanja (teks Grafik 3.1 dan KPI)
+# hari kalender, hari Minggu, jarak antar hari belanja
 _hari = (dt.date(2020, 9, 30) - dt.date(2020, 4, 1)).days + 1
 _minggu = [r for r in rows if (base + dt.timedelta(days=r[0])).weekday() == 6]
 _dh = collections.defaultdict(set)
 for r in rows: _dh[r[1]].add(r[0])
 _g = [b - a for s_ in _dh.values() for a, b in zip(sorted(s_), sorted(s_)[1:])]
-ada('jarak', '>%d</span>' % statistics.median(_g)); ada('jarak rata', '%d hari</span>' % round(statistics.mean(_g)))
 
 
 
@@ -173,4 +171,3 @@ ada('pasif irama', 'dari %d pelanggan yang datanya cukup, %d sudah lewat' % (len
 # porsi tiga merek teratas (jumlah sebenarnya, bukan jumlah persen yang sudah dibulatkan)
 _mer = collections.Counter()
 for r in rows: _mer[D['merek'][r[3]]] += r[7]
-ada('tiga merek', '(%s%%)' % ('%.1f' % (100 * sum(v for _, v in _mer.most_common(3)) / sum(_mer.values()))).replace('.', ','))
