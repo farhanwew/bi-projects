@@ -16,8 +16,8 @@ export function DiagnosticDecompositionCard({ analysis }: DiagnosticChartsProps)
   const julOmzetJt = julMonth ? julMonth.omzetJt : 811.36;
   const diffJulPct = (((withoutTop3Jt / julOmzetJt) - 1) * 100).toFixed(1);
 
-  const buyerA = "Pelanggan 009";
-  const buyerB = "Pelanggan 017";
+  const buyerSutarmuji = "Pak Sutarmuji";
+  const buyerRohmat = "Mas Rohmat";
 
   return (
     <article className={styles.decompCard}>
@@ -87,7 +87,7 @@ export function DiagnosticDecompositionCard({ analysis }: DiagnosticChartsProps)
           <tbody>
             <tr>
               <td>03/08/2020</td>
-              <td><strong>{buyerA}</strong></td>
+              <td><strong>{buyerSutarmuji}</strong></td>
               <td>MIN-001 (Minaku Otak Otak)</td>
               <td><strong>200 DUS</strong></td>
               <td>Rp 63.200.000</td>
@@ -96,7 +96,7 @@ export function DiagnosticDecompositionCard({ analysis }: DiagnosticChartsProps)
             </tr>
             <tr>
               <td>13/08/2020</td>
-              <td><strong>{buyerA}</strong></td>
+              <td><strong>{buyerSutarmuji}</strong></td>
               <td>MIN-001 (Minaku Otak Otak)</td>
               <td><strong>200 DUS</strong></td>
               <td>Rp 63.200.000</td>
@@ -105,7 +105,7 @@ export function DiagnosticDecompositionCard({ analysis }: DiagnosticChartsProps)
             </tr>
             <tr>
               <td>03/08/2020</td>
-              <td><strong>{buyerB}</strong></td>
+              <td><strong>{buyerRohmat}</strong></td>
               <td>MIN-001 (Minaku Otak Otak)</td>
               <td><strong>150 DUS</strong></td>
               <td>Rp 45.750.000</td>

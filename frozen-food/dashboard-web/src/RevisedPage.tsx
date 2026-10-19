@@ -34,6 +34,18 @@ for (const r of ROWS) if (r[AMT] >= JUMBO) {
   jumboByMonth.set(m, (jumboByMonth.get(m) ?? 0) + r[AMT] / 1e6);
   jumboQty.push(r[QTY]); jumboBuyers.add(r[CUST]);
 }
+// nota = satu pelanggan di satu hari (berkas tidak punya nomor nota); "transaksi" di versi 1 adalah baris produk
+const notaByMonth = new Map<number, number>();
+{
+  const seen = new Set<number>();
+  for (const r of ROWS) {
+    const k = r[CUST] * 1000 + r[DAY];
+    if (seen.has(k)) continue;
+    seen.add(k);
+    const m = CAL.month[r[DAY]];
+    notaByMonth.set(m, (notaByMonth.get(m) ?? 0) + 1);
+  }
+}
 const jul = month(7), aug = month(8), sep = month(9);
 const augJumbo = jumboByMonth.get(8) ?? 0;
 const augBase = aug.omzetJt - augJumbo;
@@ -101,7 +113,9 @@ function Card({ n, before, title, sub, why, wide, center, children }: { n: numbe
 export function RevisedSections({ notes }: { notes: boolean }) {
   const total = A.totalJt;
   const sepChange = (sep.omzetJt / aug.omzetJt - 1) * 100;
-  const txDrop = (aug.baris / jul.baris - 1) * 100;
+  const nota = (m: number) => notaByMonth.get(m) ?? 0;
+  const notaDrop = (nota(8) / nota(7) - 1) * 100;
+  const perNota = (m: typeof jul) => (m.omzetJt * 1e3) / nota(m.month);
   const perTx = (m: typeof jul) => (m.omzetJt * 1e3) / m.baris;
   return (
     <NotesContext.Provider value={notes}>
@@ -129,8 +143,8 @@ export function RevisedSections({ notes }: { notes: boolean }) {
         </Card>
 
         <Card n={2} wide before="tiga kartu terpisah: omzet, transaksi, dan tombol 'per hari'"
-          title={`Agustus: omzet naik ${pct((aug.omzetJt / jul.omzetJt - 1) * 100)}, tetapi jumlah transaksi turun ${pct(Math.abs(txDrop))}`}
-          sub={`Dua grafik dengan bulan yang sejajar: omzet di atas, jumlah transaksi di bawah. Nilai rata-rata per transaksi naik dari Rp${int(perTx(jul))} rb ke Rp${int(perTx(aug))} rb.`}
+          title={`Agustus: omzet naik ${pct((aug.omzetJt / jul.omzetJt - 1) * 100)}, tetapi jumlah pembelian turun ${pct(Math.abs(notaDrop))}`}
+          sub={`Dua grafik dengan bulan yang sejajar: omzet di atas, jumlah pembelian di bawah. Pembelian = satu pelanggan di satu hari. Nilai rata-rata per pembelian naik dari Rp${one(perNota(jul) / 1e3)} jt ke Rp${one(perNota(aug) / 1e3)} jt.`}
           why="omzet dan transaksi bercerita bersama, tetapi di versi 1 audiens harus mencocokkan sendiri dua kartu dengan skala berbeda. Dua sumbu Y dalam satu grafik membingungkan, jadi keduanya disusun atas-bawah dengan bulan yang sejajar. Tombol 'per hari' dihapus karena mengulang grafik tren harian.">
           <div className={styles.stack}>
             <p className={styles.panel}><b>Omzet per bulan</b> · juta rupiah · <span className={styles.key}><i className={styles.keyHi} /> pesanan jumbo</span></p>
@@ -139,8 +153,8 @@ export function RevisedSections({ notes }: { notes: boolean }) {
               return { key: `o${m.month}`, label: m.short, value: m.omzetJt - j, text: int(m.omzetJt), hi: m.month === 8, top: j ? { value: j, text: `+${int(j)}` } : undefined,
                 detail: `${m.label}: ${rp(m.omzetJt)} dari ${int(m.baris)} transaksi${j ? `, termasuk ${rp(j)} dari pesanan jumbo` : ""}` };
             })} />
-            <p className={styles.panel}><b>Jumlah transaksi per bulan</b> · banyaknya transaksi, bukan rupiah</p>
-            <VBars label="Transaksi per bulan" W={1100} height={170} items={A.months.map(m => ({ key: `t${m.month}`, label: m.short, value: m.baris, text: int(m.baris), hi: m.month === 8, detail: `${m.label}: ${int(m.baris)} transaksi, rata-rata Rp${int(perTx(m))} rb per transaksi` }))} />
+            <p className={styles.panel}><b>Jumlah pembelian per bulan</b> · satu pelanggan di satu hari, bukan rupiah</p>
+            <VBars label="Pembelian per bulan" W={1100} height={170} items={A.months.map(m => ({ key: `t${m.month}`, label: m.short, value: nota(m.month), text: int(nota(m.month)), hi: m.month === 8, detail: `${m.label}: ${int(nota(m.month))} pembelian, rata-rata ${rp(perNota(m) / 1e3)} per pembelian` }))} />
           </div>
         </Card>
 

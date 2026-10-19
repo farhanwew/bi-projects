@@ -8,6 +8,7 @@ export interface Dict {
   base: string;
   hari: number;
   pelanggan: string[];
+  pelangganAnon?: string[];
   produk: string[];
   merek: string[];
   satuan: string[];
