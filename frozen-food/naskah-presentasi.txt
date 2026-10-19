@@ -1,0 +1,102 @@
+NASKAH PRESENTASI DASHBOARD PENJUALAN FROZEN FOOD (± 5 MENIT)
+Audiens: Head of Marketing / CRM
+Data: penjualan April–September 2020 | 6.720 transaksi | 181 pelanggan | 297 produk | total Rp 4,53 miliar
+Tanda [ ] = apa yang dilakukan di layar. Angka sudah dicek ke data (frozen-food/check_laporan.py).
+
+============================================================
+0. PEMBUKA (± 40 detik) [layar: dashboard Versi 1]
+============================================================
+"Ini dashboard Versi 1. Isinya lengkap: omzet, transaksi, pelanggan, produk, pola hari. Tapi kalau saya tanya
+'jadi apa yang harus dilakukan?', dashboard ini tidak menjawab. Tidak ada audiens, tidak ada pesan utama.
+
+Di Versi 2 saya memakai prinsip storytelling with data: satu audiens, satu pesan, judul berupa kesimpulan,
+satu warna sorotan, dan setiap klaim dicek ke data. Audiens yang saya pilih adalah Head of Marketing / CRM,
+karena keputusannya paling langsung: pelanggan mana yang perlu dihubungi."
+
+PESAN INTI (ulangi di akhir):
+"Omzet naik sampai Agustus, tetapi pelanggan lama banyak yang belanjanya turun. Tim CRM perlu tahu siapa mereka."
+
+============================================================
+1. KONTEKS - OMZET (± 40 detik)
+============================================================
+[klik: 1. Omzet per bulan]
+Judul grafik: "Omzet naik tiap bulan sampai Agustus, lalu turun 15% di September"
+"Omzet naik setiap bulan: Rp 610 juta di April, 707 di Mei, 772 di Juni, 811 di Juli, dan rekor Rp 883 juta di
+Agustus. Lalu September turun 15% ke Rp 747 juta.
+
+Satu catatan: Agustus ditopang tiga pesanan besar milik dua pembeli (Rp 172 juta, 19,5% omzet bulan itu). Bulan lain,
+tiga pesanan terbesarnya hanya 6 sampai 13%. Jadi kenaikan Agustus tidak mencerminkan seluruh pelanggan, dan itu
+membawa kita ke pertanyaan berikutnya."
+
+============================================================
+2. BAGIAN 2 - PELANGGAN: SIAPA YANG BELANJANYA TURUN (± 2,5 menit)
+============================================================
+[klik: 2. Pelanggan]
+Grafik 2.1 - sepuluh pelanggan terbesar:
+"Sepuluh pelanggan terbesar menghasilkan 53% omzet, sekitar Rp 2,4 miliar. Pelanggan terbesar sendiri 12,1%,
+Rp 548 juta. Sebanyak 37 dari 181 pelanggan sudah menghasilkan 80% omzet. Artinya hubungan dengan
+pelanggan besar sangat menentukan."
+
+Grafik 2.2 - pelanggan yang belanjanya turun:
+"Saya bandingkan rata-rata belanja bulanan Agustus-September dengan bulan-bulan sebelumnya, untuk 146 pelanggan
+yang sudah belanja sejak Juli atau lebih awal. Hasilnya: 111 pelanggan belanjanya turun, hanya 35 yang naik.
+Secara bersih, belanja bulanan kelompok ini turun sekitar Rp 145 juta per bulan.
+
+Penurunannya terkonsentrasi: sepuluh pelanggan dengan penurunan terbesar menyumbang sekitar Rp 131 juta dari itu,
+dan lima teratas saja sekitar Rp 100 juta. Tiga pelanggan teratas turun Rp 21 sampai 37 juta per bulan."
+
+Grafik 2.3 - pelanggan baru dan lama:
+"Dari 100 pelanggan lama, 74 belanja lagi bulan berikutnya. Pada pelanggan baru, hanya 53 dari 100.
+Per bulan, rata-rata 3 dari 10 pelanggan belum belanja lagi (23 sampai 37% tergantung bulan).
+
+Tapi 'belum belanja lagi' belum tentu hilang: dari pelanggan yang absen sebulan, 31 sampai 58% belanja lagi dua
+bulan kemudian. Pelanggan baru hanya 4 sampai 13% omzet bulanan, jadi omzet sekarang masih ditopang pelanggan lama."
+
+Kebiasaan belanja: "Pelanggan yang belanja di suatu bulan rata-rata datang 2,6 kali di bulan itu. Selama enam bulan,
+82% pelanggan belanja lebih dari satu hari."
+
+Usulan: hubungi dulu pelanggan dengan penurunan terbesar, ingatkan yang sudah lama tidak belanja, dan ajak
+pelanggan baru belanja lagi dalam 30 hari pertama.
+
+============================================================
+3. PELUANG - PRODUK YANG DIBELI BERSAMAAN (± 40 detik)
+============================================================
+[klik: 3. Produk, Grafik 3.4]
+Judul grafik: "Okey Sosis dan Okey Stick paling sering dibeli bersamaan (183 nota)"
+"Dari semua pasangan produk, Okey Sosis dan Okey Stick paling sering muncul dalam satu pembelian: 183 nota.
+Bagi tim CRM ini bahan yang langsung bisa dipakai: tawarkan paket bundling ke pelanggan yang belanjanya turun,
+dengan satu produk dari pasangan ini sebagai pembuka."
+
+Catatan: satu nota = satu pelanggan di satu hari (data tidak punya nomor nota).
+
+============================================================
+4. PENUTUP (± 30 detik)
+============================================================
+"Kesimpulannya: omzet naik sampai Agustus dan turun 15% di September, dan di balik itu 111 dari 146 pelanggan lama
+belanjanya turun. Yang paling mendesak: menghubungi pelanggan dengan penurunan terbesar, dan menguji paket bundling
+Okey Sosis + Okey Stick.
+
+Batas data: kami tidak punya biaya iklan, margin, stok, atau target penjualan, jadi efektivitas promo dan keuntungan
+belum bisa dinilai. Semua angka dihitung dari data penjualan dan dicek dengan skrip pengecek."
+
+============================================================
+CATATAN KALAU DITANYA
+============================================================
+- Kenapa hanya satu audiens?
+  Satu audiens membuat pesannya tajam. Audiens lain (Finance, Sales & Product) tetap bisa memakai halaman yang sama
+  di dashboard, tetapi naskah ini hanya untuk Head of Marketing / CRM.
+- Bagaimana "belanjanya turun" dihitung?
+  Untuk tiap pelanggan yang pertama kali belanja di April sampai Juli: rata-rata omzet per bulan sejak bulan pertamanya
+  sampai Juli, dibandingkan rata-rata Agustus dan September. Pelanggan baru sejak Agustus tidak ikut dihitung.
+- Kenapa tidak pakai istilah churn?
+  Tidak belanja di satu bulan belum tentu berhenti; separuh yang absen sebulan kembali dua bulan kemudian. Kami pakai
+  "belum belanja lagi".
+- Apa itu pelanggan baru?
+  Pertama kali belanja di bulan itu. Pelanggan April tidak dihitung baru karena data mulai April.
+- Apa bedanya transaksi dan pembelian?
+  Transaksi di data adalah satu baris produk (6.720). Satu pembelian = satu pelanggan di satu hari (tidak ada nomor nota).
+- Dari mana angka-angkanya?
+  Enam file Excel penjualan April-September 2020; 58 baris bernilai Rp 0 (sampel/bonus) tidak dihitung; dua toko yang
+  berganti nama digabung (181 pelanggan).
+- Kenapa tidak ada prediksi atau potensi tambahan omzet?
+  Data tidak memuat biaya atau margin, jadi angka seperti itu hanya tebakan.
