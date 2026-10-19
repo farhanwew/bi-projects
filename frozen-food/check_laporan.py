@@ -169,3 +169,8 @@ _nl = [c for c in _ps if len(_dd[c]) >= 4]
 _lw = sum(1 for c in _nl if _ak0 - _ls[c] > 2 * statistics.median([b - a for a, b in zip(sorted(_dd[c]), sorted(_dd[c])[1:])]))
 ada('pasif besar', 'peringkat omzet ke-%d, Rp %d juta' % (_rk, round(_oo[_tp] / 1e6)))
 ada('pasif irama', 'dari %d pelanggan yang datanya cukup, %d sudah lewat' % (len(_nl), _lw))
+
+# porsi tiga merek teratas (jumlah sebenarnya, bukan jumlah persen yang sudah dibulatkan)
+_mer = collections.Counter()
+for r in rows: _mer[D['merek'][r[3]]] += r[7]
+ada('tiga merek', '(%s%%)' % ('%.1f' % (100 * sum(v for _, v in _mer.most_common(3)) / sum(_mer.values()))).replace('.', ','))
