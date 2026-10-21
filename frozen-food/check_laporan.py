@@ -169,3 +169,22 @@ _nl = [c for c in _ps if len(_dd[c]) >= 4]
 _lw = sum(1 for c in _nl if _ak0 - _ls[c] > 2 * statistics.median([b - a for a, b in zip(sorted(_dd[c]), sorted(_dd[c])[1:])]))
 ada('pasif besar', 'peringkat omzet ke-%d, Rp %d juta' % (_rk, round(_oo[_tp] / 1e6)))
 ada('pasif irama', 'dari %d pelanggan yang datanya cukup, %d sudah lewat' % (len(_nl), _lw))
+
+# Grafik 3.3: merek dengan 6 produk atau lebih, omzet rata-rata per produk
+_NM = {"JOF": "Jofrans", "MIT": "Mitraku", "MIN": "Minaku", "DEN": "Den Bagus", "BLF": "Belfoods", "SHIF": "Shifudo", "BF": "BF", "BAKSO": "Bakso (tanpa merek)", "KANZ": "Kanzler", "SUN": "Sunfish", "MI": "Miami", "WEI": "Wei Wang dan Umia-Mi", "DEL": "Delmonte", "DIA": "Diamond", "IP": "IP"}
+_om3 = collections.Counter(); _pr3 = collections.defaultdict(set); _sep3 = set(); _ls3 = {}; _o3 = collections.Counter(); _a3 = collections.defaultdict(set)
+for r in rows:
+    _b = D['merek'][r[3]]; _om3[_b] += r[7]; _pr3[_b].add(r[2]); _ls3[r[2]] = max(_ls3.get(r[2], 0), r[0]); _o3[r[2]] += r[7]; _a3[r[2]].add(bulan(r[0]))
+    if bulan(r[0]) == 9: _sep3.add(r[2])
+_bs = sorted([b_ for b_ in _pr3 if len(_pr3[b_]) >= 6], key=lambda b_: _om3[b_] / len(_pr3[b_])); assert set(_bs) == set(_NM)
+_M = dict(nama=[_NM[b_] for b_ in _bs], produk=[len(_pr3[b_]) for b_ in _bs], per=[round(_om3[b_] / len(_pr3[b_]) / 1e6, 1) for b_ in _bs], total=[round(_om3[b_] / 1e6, 1) for b_ in _bs], absen=[sum(1 for p_ in _pr3[b_] if p_ not in _sep3) for b_ in _bs])
+ada('merek 3.3', 'const MEREK = ' + json.dumps(_M, ensure_ascii=False))
+_kc = sum(1 for v in _M['per'] if v < 4); ada('merek kecil', '%s merek punya 6 produk atau lebih, tetapi tiap produknya menghasilkan kurang dari Rp 4 juta' % {7: 'Tujuh'}[_kc])
+ada('merek 15', '15 dari %d merek' % len(_om3)); ada('minaku per produk', 'Minaku menghasilkan Rp %d juta per produk' % round(_M['per'][_M['nama'].index('Minaku')]))
+ada('mitraku', 'Mitraku punya %d produk</strong>, terbanyak kedua setelah Jofrans, tetapi hanya %s%% omzet' % (len(_pr3['MIT']), ('%.1f' % (100 * _om3['MIT'] / tot)).replace('.', ',')))
+assert sorted(len(v) for v in _pr3.values())[-2:] == [22, 25]
+_s47 = [p_ for p_, d_ in _ls3.items() if bulan(d_) <= 6]; _o47 = sum(_o3[p_] for p_ in _s47)
+ada('jarang 47', '%d produk sudah tidak terjual sejak Juni' % len(_s47)); ada('jarang 47 omzet', 'Rp %s juta (%s%% omzet)' % (('%.1f' % (_o47 / 1e6)).replace('.', ','), ('%.1f' % (100 * _o47 / tot)).replace('.', ',')))
+_pn = {n_.upper(): i_ for i_, n_ in enumerate(D['produk'])}
+assert sorted(_a3[_pn['JULIENNE SHOESTRING 2.5 KG X 4 PACK']]) == [5, 6] and sorted(_a3[_pn['STAR JULIENNE SHOESTRING 2.5 KG X 5 PACK']]) == [7, 8]; ada('julienne', 'Julienne Shoestring berhenti di Juni dan Star Julienne Shoestring muncul di Juli')
+print('ok: Grafik 3.3')
